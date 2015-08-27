@@ -1,0 +1,12 @@
+// IDP structure - example 14
+// best value = 90
+// { 1066; 1067; 1175; 1176; 1303; 1304; 1305; 1306; 1575; 1578; 1581; 1600; 1739; 1744 }
+
+	fork = {fork}
+	knife= {knife}
+	smallKnife = {smallKnife}
+	saucer = {saucer}
+    	plate = {plate}
+    	teaCup = {cup}
+
+	position = {(0, 0, 0, fork); (0, 1, 0, saucer); (0, 1 ,1, smallKnife); (1, 0, 0, plate); (2, 0, 0, knife); (2, 1, 0, cup)}

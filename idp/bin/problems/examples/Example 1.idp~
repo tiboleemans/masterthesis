@@ -1,0 +1,9 @@
+// IDP structure - example 1
+// best value = 107
+// { 486; 488; 543; 545; 557; 924; 1070; 1318; 1336; 1343; 1361; 1382 }
+
+    knife = {knife}
+    plate = {plate}
+    teaCup = {cup}
+
+    position = {(0, 0, 0, plate); (1, 0, 0, knife); (1, 1, 0, cup)}

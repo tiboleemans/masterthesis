@@ -1,0 +1,52 @@
+// IDP structure - example 20
+// best value = 627
+// { 91; 151; 182; 674; 746; 935; 954; 984; 1002; 1011; 1018; 1020; 1021; 1078; 1103; 1261; 1276; 1279; 1488; 1562; 1568; 1626; 1701; 1702; 1703; 1711; 1712; 1715; 1730; 1731; 1867; 1920; 1921; 1922; 1923; 1924; 1925 }
+
+
+	fork = {fork}
+	knife= {knife}
+	spoon = {spoon}
+    	bowl = {bowl}
+    	plate = {plate}
+    	waterGlass = {water}
+	wineGlass= {wine}
+
+	position = {(0, 0, 0, fork); (1, 0, 0, plate); (1, 0, 1, bowl); (2, 0, 0, knife); (2, 1, 0, wine); (3, 1, 0, water); (3, 0, 0, spoon)}
+
+RuleNr: 91 Penalty: 100 Clause:  ( bowl(X) & there_is_a_wineGlass ) => ( false))
+RuleNr: 151 Penalty: 100 Clause:  ( wineGlass(X) & there_is_a_bowl ) => ( false))
+RuleNr: 182 Penalty: 100 Clause: ( there_is_a_bowl & there_is_a_wineGlass ) => ( false)
+RuleNr: 674 Penalty: 17 Clause:  ( there_is_a_wineGlass & on(X,Y) ) => ( there_is_a_soupPlate))
+RuleNr: 746 Penalty: 33 Clause:  ( on(W,X) & left_of(W,Y) & left_of(X,Z) ) => ( false))
+RuleNr: 935 Penalty: 6 Clause:  ( knife(X) & there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_soupPlate))
+RuleNr: 954 Penalty: 9 Clause:  ( knife(X) & there_is_a_wineGlass & left_of(X,Y) ) => ( there_is_a_soupPlate))
+RuleNr: 984 Penalty: 6 Clause:  ( spoon(X) & there_is_a_knife & there_is_a_wineGlass ) => ( there_is_a_soupPlate))
+RuleNr: 1002 Penalty: 6 Clause:  ( spoon(X) & there_is_a_plate & there_is_a_wineGlass ) => ( there_is_a_soupPlate))
+RuleNr: 1011 Penalty: 9 Clause:  ( spoon(X) & there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_teaCup))
+RuleNr: 1018 Penalty: 6 Clause:  ( spoon(X) & there_is_a_wineGlass ) => ( there_is_a_pastaPlate | there_is_a_soupPlate))
+RuleNr: 1020 Penalty: 9 Clause:  ( spoon(X) & there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_soupPlate))
+RuleNr: 1021 Penalty: 9 Clause:  ( spoon(X) & above_of(X,Y) ) => ( there_is_a_soupPlate | there_is_a_teaCup))
+RuleNr: 1078 Penalty: 6 Clause:  ( plate(X) & there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_soupPlate))
+RuleNr: 1103 Penalty: 9 Clause:  ( plate(X) & there_is_a_wineGlass & on(X,Y) ) => ( soupPlate(Y)))
+RuleNr: 1261 Penalty: 6 Clause:  ( wineGlass(X) & there_is_a_knife & there_is_a_spoon ) => ( there_is_a_soupPlate))
+RuleNr: 1276 Penalty: 6 Clause:  ( wineGlass(X) & there_is_a_spoon & there_is_a_plate ) => ( there_is_a_soupPlate))
+RuleNr: 1279 Penalty: 6 Clause:  ( wineGlass(X) & there_is_a_spoon ) => ( there_is_a_pastaPlate | there_is_a_soupPlate))
+RuleNr: 1488 Penalty: 6 Clause: ( there_is_a_knife & there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_soupPlate)
+RuleNr: 1562 Penalty: 6 Clause: ( there_is_a_spoon & there_is_a_plate & there_is_a_wineGlass ) => ( there_is_a_soupPlate)
+RuleNr: 1568 Penalty: 6 Clause: ( there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_pastaPlate | there_is_a_soupPlate)
+RuleNr: 1626 Penalty: 9 Clause:  ( there_is_a_wineGlass & on(X,Y) ) => ( there_is_a_smallKnife | soupPlate(Y)))
+RuleNr: 1701 Penalty: 9 Clause:  ( there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_teaCup | knife(X)))
+RuleNr: 1702 Penalty: 9 Clause:  ( there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_teaCup | waterGlass(Y)))
+RuleNr: 1703 Penalty: 13 Clause:  ( there_is_a_bowl & above_of(X,Y) & left_of(Y,Z) ) => ( there_is_a_teaCup))
+RuleNr: 1711 Penalty: 8 Clause:  ( there_is_a_bowl & drink_container(X) ) => ( there_is_a_teaCup | waterGlass(X)))
+RuleNr: 1712 Penalty: 11 Clause:  ( there_is_a_bowl & drink_container(X) & left_of(X,Y) ) => ( there_is_a_teaCup))
+RuleNr: 1715 Penalty: 13 Clause:  ( there_is_a_bowl & above_of(X,Y) & left_of(Y,Z) ) => ( teaCup(Y)))
+RuleNr: 1730 Penalty: 8 Clause:  ( there_is_a_bowl & drink_container(X) ) => ( waterGlass(X) | teaCup(X)))
+RuleNr: 1731 Penalty: 11 Clause:  ( there_is_a_bowl & drink_container(X) & left_of(X,Y) ) => ( teaCup(X)))
+RuleNr: 1867 Penalty: 9 Clause:  ( there_is_a_wineGlass & on(X,Y) ) => ( there_is_a_saucer | soupPlate(Y)))
+RuleNr: 1920 Penalty: 9 Clause:  ( there_is_a_wineGlass & on(X,Y) ) => ( smallKnife(Y) | soupPlate(Y)))
+RuleNr: 1921 Penalty: 9 Clause:  ( there_is_a_wineGlass & on(X,Y) ) => ( saucer(X) | soupPlate(Y)))
+RuleNr: 1922 Penalty: 13 Clause:  ( there_is_a_wineGlass & on(X,Y) & left_of(X,Z) ) => ( soupPlate(Y)))
+RuleNr: 1923 Penalty: 13 Clause:  ( there_is_a_wineGlass & on(X,Y) & left_of(Y,Z) ) => ( soupPlate(Y)))
+RuleNr: 1924 Penalty: 11 Clause:  ( there_is_a_wineGlass & on(X,Y) ) => ( soupPlate(Y) | food_utensil(Y)))
+RuleNr: 1925 Penalty: 11 Clause:  ( there_is_a_wineGlass & on(X,Y) & food_container(Y) ) => ( soupPlate(Y)))

@@ -1,0 +1,11 @@
+// IDP structure - Subtile bad example 2
+// best value = 438
+// { 49; 269; 276; 277; 292; 293; 447; 461; 462; 563; 571; 1185; 1192; 1240; 1241; 1251; 1252; 1267; 1268; 1269; 1270; 1293; 1294; 1295; 1296; 1434; 1443; 1513; 1516; 1517; 1520; 1654; 1657; 1658; 1661 }
+
+
+	spoon = {spoon}
+	soupPlate = {soupPlate}
+    	waterGlass = {water}
+	wineGlass = {wine}
+
+	position = {(0, 0, 0, spoon); (1, 0, 0, soupPlate); (3, 1, 0, water); (2, 1, 0, wine)}

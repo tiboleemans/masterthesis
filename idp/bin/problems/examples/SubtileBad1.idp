@@ -1,0 +1,10 @@
+// IDP structure - Subtile bad example 1
+// best value = 735
+// { 18; 77; 78; 80; 192; 241; 244; 257; 921; 941; 944; 957; 967; 1587; 1622; 1630; 1863; 1871; 1880; 1883; 1963; 2055; 2056; 2121 }
+
+	knife = {knife}
+	plate = {plate}
+	fork = {fork}
+    	waterGlass = {water}
+
+	position = {(0, 0, 0, knife); (1, 0, 0, plate); (2, 0, 0, fork); (2, 1, 0, water)}

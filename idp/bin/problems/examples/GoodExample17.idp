@@ -1,0 +1,10 @@
+// IDP structure - Subtile bad example 4
+// best value = 120
+// { 354; 359; 361; 582; 638; 665; 1147; 1148; 1330; 1373; 1405; 1512; 1653 }
+
+
+	bowl = {bowl}
+	spoon = {spoon}
+
+	position = {(0, 0, 0, bowl); (1, 0, 0, spoon)}
+

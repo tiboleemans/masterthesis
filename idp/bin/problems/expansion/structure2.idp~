@@ -1,0 +1,20 @@
+structure S2 : V {
+    RuleNr = {0..2166}
+    Penalty = {0..100}
+    PossCoX = {0..5}
+    PossCoY = {0..5}
+    PossCoZ = {0..5}
+
+// Structure of example
+	knife<ct> = {knife}
+	plate<ct> = {plate}
+	fork<ct> = {fork}
+    	waterGlass<ct> = {water}
+
+	penalty<ct> = {}
+	penalty<cf> = {1..218}
+	
+	penaltyCost<u> = {}
+
+
+}

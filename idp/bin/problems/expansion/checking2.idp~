@@ -1,0 +1,108 @@
+
+vocabulary  V {
+    type RuleNr isa int
+    type Penalty isa int
+    type Object
+
+    type Fork isa Object 
+    type Knife isa Object
+    type Spoon isa Object
+    type SmallKnife isa Object
+    
+    type Plate isa Object
+    type Bowl isa Object
+    type PastaPlate isa Object
+    type SoupPlate isa Object
+    type Saucer isa Object
+
+    type WaterGlass isa Object 
+    type WineGlass isa Object
+    type TeaCup isa Object
+
+    type PossCoX isa int
+    type PossCoY isa int
+    type PossCoZ isa int
+
+    fork(Fork)
+    knife(Knife)
+    spoon(Spoon)
+    smallKnife(SmallKnife)
+
+    plate(Plate)
+    bowl(Bowl)
+    pastaPlate(PastaPlate)
+    soupPlate(SoupPlate)
+    saucer(Saucer)
+
+    waterGlass(WaterGlass)
+    wineGlass(WineGlass)
+    teaCup(TeaCup)
+
+    food_container(Object)
+    drink_container(Object)
+    food_utensil(Object)
+
+    above_of(Object, Object)
+    left_of(Object, Object)
+    on(Object, Object)
+    step(Object, Object)
+    Reachable(Object, Object)
+
+    position(PossCoX,PossCoY,PossCoZ,Object)
+
+    there_is_a_fork
+    there_is_a_knife
+    there_is_a_spoon
+    there_is_a_smallKnife
+    there_is_a_plate
+    there_is_a_bowl
+    there_is_a_pastaPlate
+    there_is_a_soupPlate
+    there_is_a_saucer
+    there_is_a_waterGlass
+    there_is_a_wineGlass
+    there_is_a_teaCup
+    
+    penalty(RuleNr)
+    penaltyCost(RuleNr):Penalty
+}
+
+term penaltyTerm:V{
+    sum{X : penalty(X) : penaltyCost(X)}
+}
+
+include "/theoryBackground.idp"
+include "/theoryRules.idp"
+
+
+
+
+include "/structure.idp"
+
+
+procedure main() {
+    T = merge(T1, T2)
+    stdoptions.nrpropsteps=1
+    stdoptions.longestbranch=1
+    stdoptions.liftedunitpropagation=false
+    stdoptions.cpsupport=true
+    stdoptions.verbosity.grounding=1
+    stdoptions.verbosity.solving=1
+    stdoptions.groundwithbounds=false
+    stdoptions.splitdefs=false
+
+    sol = minimize(T,S,penaltyTerm)[1]
+    print(sol[V::penalty].ct)
+    print(sol)
+
+	// printcore(T, S)
+
+/*	sol = modelexpand(T,S)[1]*/
+/*	print(sol)*/
+}
+
+
+
+
+
+

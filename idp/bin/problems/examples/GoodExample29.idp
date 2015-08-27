@@ -1,0 +1,9 @@
+
+
+	soupPlate = {soupPlate}
+	spoon = {spoon}
+	wineGlass = {wine}
+
+	position = {(0, 0, 0, soupPlate); (1, 0, 0, spoon); (1, 1, 0, wine)}
+
+

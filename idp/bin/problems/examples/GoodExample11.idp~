@@ -1,0 +1,43 @@
+// IDP structure - example 11
+// best value = 280
+// { 321; 356; 360; 397; 625; 664; 746; 858; 994; 1019; 1065; 1174; 1557; 1569; 1606; 1701; 1702; 1704; 1705; 1706; 1707; 1708; 1709; 1710; 1861; 1960 }
+
+
+	fork = {fork}
+	knife= {knife}
+	spoon = {spoon}
+	smallKnife = {smallKnife}
+	saucer = {saucer}
+    	bowl = {bowl}
+    	plate = {plate}
+    	waterGlass = {water}
+
+	position = {(0, 0, 0, fork); (0, 1, 0, saucer); (0, 1 ,1, smallKnife); (1, 0, 0, plate); (1, 0, 1, bowl); (2, 0, 0, knife); (3, 0, 0, spoon); (2, 1, 0, water)}
+
+RuleNr: 321 Penalty: 12 Clause:  ( smallKnife(X) & there_is_a_bowl ) => ( there_is_a_teaCup))
+RuleNr: 356 Penalty: 12 Clause:  ( bowl(X) & there_is_a_smallKnife ) => ( there_is_a_teaCup))
+RuleNr: 360 Penalty: 12 Clause:  ( bowl(X) & there_is_a_saucer ) => ( there_is_a_teaCup))
+RuleNr: 397 Penalty: 12 Clause:  ( saucer(X) & there_is_a_bowl ) => ( there_is_a_teaCup))
+RuleNr: 625 Penalty: 12 Clause: ( there_is_a_smallKnife & there_is_a_bowl ) => ( there_is_a_teaCup)
+RuleNr: 664 Penalty: 12 Clause: ( there_is_a_bowl & there_is_a_saucer ) => ( there_is_a_teaCup)
+RuleNr: 746 Penalty: 33 Clause:  ( on(W,X) & left_of(W,Y) & left_of(X,Z) ) => ( false))
+RuleNr: 858 Penalty: 9 Clause:  ( fork(X) & there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_teaCup))
+RuleNr: 994 Penalty: 6 Clause:  ( spoon(X) & there_is_a_smallKnife ) => ( there_is_a_soupPlate | there_is_a_teaCup))
+RuleNr: 1019 Penalty: 6 Clause:  ( spoon(X) & there_is_a_saucer ) => ( there_is_a_soupPlate | there_is_a_teaCup))
+RuleNr: 1065 Penalty: 6 Clause:  ( smallKnife(X) & there_is_a_spoon ) => ( there_is_a_soupPlate | there_is_a_teaCup))
+RuleNr: 1174 Penalty: 6 Clause:  ( saucer(X) & there_is_a_spoon ) => ( there_is_a_soupPlate | there_is_a_teaCup))
+RuleNr: 1557 Penalty: 6 Clause: ( there_is_a_spoon & there_is_a_smallKnife ) => ( there_is_a_soupPlate | there_is_a_teaCup)
+RuleNr: 1569 Penalty: 6 Clause: ( there_is_a_spoon & there_is_a_saucer ) => ( there_is_a_soupPlate | there_is_a_teaCup)
+RuleNr: 1606 Penalty: 13 Clause:  ( there_is_a_smallKnife & above_of(X,Y) & waterGlass(Y) & left_of(X,Z) ) => ( false))
+RuleNr: 1701 Penalty: 9 Clause:  ( there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_teaCup | knife(X)))
+RuleNr: 1702 Penalty: 9 Clause:  ( there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_teaCup | waterGlass(Y)))
+RuleNr: 1704 Penalty: 11 Clause:  ( there_is_a_bowl & above_of(X,Y) & food_utensil(Y) ) => ( there_is_a_teaCup))
+RuleNr: 1705 Penalty: 11 Clause:  ( there_is_a_bowl & above_of(X,Y) & food_container(Y) ) => ( there_is_a_teaCup))
+RuleNr: 1706 Penalty: 11 Clause:  ( there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_teaCup | drink_container(Y)))
+RuleNr: 1707 Penalty: 9 Clause:  ( there_is_a_bowl & on(X,Y) ) => ( there_is_a_teaCup | plate(X)))
+RuleNr: 1708 Penalty: 9 Clause:  ( there_is_a_bowl & on(X,Y) ) => ( there_is_a_teaCup | bowl(Y)))
+RuleNr: 1709 Penalty: 11 Clause:  ( there_is_a_bowl & on(X,Y) & food_utensil(Y) ) => ( there_is_a_teaCup))
+RuleNr: 1710 Penalty: 11 Clause:  ( there_is_a_bowl & on(X,Y) ) => ( there_is_a_teaCup | food_container(Y)))
+RuleNr: 1861 Penalty: 13 Clause:  ( there_is_a_saucer & above_of(X,Y) & waterGlass(Y) & left_of(X,Z) ) => ( false))
+RuleNr: 1960 Penalty: 13 Clause:  ( above_of(X,Y) & left_of(X,Z) & bowl(Z) ) => ( there_is_a_teaCup))
+

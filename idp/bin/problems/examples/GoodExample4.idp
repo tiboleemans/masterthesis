@@ -1,0 +1,8 @@
+// IDP structure - example 4
+// best value = 0
+	fork = {fork}
+    	knife = {knife}
+    	plate = {plate}
+    	waterGlass = {water}
+
+    	position = {(0, 0, 0, fork); (1, 0, 0, plate); (2, 0, 0, knife); (2, 1, 0, water)}

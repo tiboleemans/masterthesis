@@ -1,0 +1,22 @@
+// IDP structure - example 1
+// best value = 107
+// { 486; 488; 543; 545; 557; 924; 1070; 1318; 1336; 1343; 1361; 1382 }
+
+    knife = {knife}
+    plate = {plate}
+    teaCup = {cup}
+
+    position = {(0, 0, 0, plate); (1, 0, 0, knife); (1, 1, 0, cup)}
+
+RuleNr: 486 Penalty: 12 Clause:  ( teaCup(X) ) => ( there_is_a_fork | there_is_a_spoon))
+RuleNr: 488 Penalty: 12 Clause:  ( teaCup(X) ) => ( there_is_a_fork | there_is_a_bowl))
+RuleNr: 543 Penalty: 12 Clause: ( there_is_a_fork | there_is_a_spoon | there_is_a_waterGlass)
+RuleNr: 545 Penalty: 12 Clause: ( there_is_a_teaCup ) => ( there_is_a_fork | there_is_a_spoon)
+RuleNr: 557 Penalty: 12 Clause: ( there_is_a_teaCup ) => ( there_is_a_fork | there_is_a_bowl)
+RuleNr: 924 Penalty: 6 Clause:  ( knife(X) ) => ( there_is_a_fork | there_is_a_bowl | there_is_a_waterGlass))
+RuleNr: 1070 Penalty: 6 Clause:  ( plate(X) ) => ( there_is_a_fork | there_is_a_bowl | there_is_a_waterGlass))
+RuleNr: 1318 Penalty: 6 Clause: ( there_is_a_knife ) => ( there_is_a_fork | there_is_a_bowl | there_is_a_waterGlass)
+RuleNr: 1336 Penalty: 9 Clause:  ( above_of(X,Y) ) => ( there_is_a_fork | there_is_a_spoon | waterGlass(Y)))
+RuleNr: 1343 Penalty: 8 Clause:  ( drink_container(X) ) => ( there_is_a_fork | there_is_a_spoon | waterGlass(X)))
+RuleNr: 1361 Penalty: 6 Clause: ( there_is_a_plate ) => ( there_is_a_fork | there_is_a_bowl | there_is_a_waterGlass)
+RuleNr: 1382 Penalty: 6 Clause: ( there_is_a_fork | there_is_a_bowl | there_is_a_soupPlate | there_is_a_waterGlass)

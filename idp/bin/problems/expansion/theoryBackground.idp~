@@ -1,0 +1,43 @@
+theory T1 : V {
+// Necessary background rules
+!A, B: above_of(A, B) <=>  ? X, Y1, Y2, Z1, Z2 :(position(X, Y1, Z1, A) & position(X, Y2, Z2, B) & Y1 + 1 = Y2).
+!A, B: left_of(A, B) <=> ? X1, X2, Y, Z1, Z2 : (position(X1, Y, Z1, A) & position(X2, Y, Z2, B) & X1 + 1 = X2).
+!A, B: on(A, B) <=> ? X, Y, Z1, Z2 : (position(X, Y, Z1, A) & position(X, Y, Z2, B) & Z1 < Z2).
+!O[Object] : ?X, Y, Z : position(X, Y, Z, O).
+!O, X, Y, Z : position(X, Y, Z, O) & Z > 0 => ?O' : position(X, Y, Z-1, O') & O ~= O'.
+!O1, O2, X, Y, Z : position(X, Y, Z, O1) & position(X, Y, Z, O2) => O1 = O2.
+!X1, Y1, Z1 : position(X1, Y1, Z1, O) & position(X2, Y2, Z2, O) => X1 = X2 & Y1 = Y2 & Z1 = Z2.
+
+?Y, Z, O : position(0, Y, Z, O).
+?X, Z, O : position(X, 0, Z, O).
+
+    {
+        step(x,y) <- above_of(x,y).
+        step(x,y) <- left_of(x,y).
+        step(x,y) <- on(x,y).
+
+        step(x,y) <- above_of(y,x).
+        step(x,y) <- left_of(y,x).
+        step(x,y) <- on(y,x).
+    }
+
+    {
+        ! x y: Reachable(x,y) <- step(x,y).
+        ! x y: Reachable(x,y) <- ? z: step(x,z) & Reachable(z,y).
+    }
+
+! X, Y : Reachable(X, Y).
+
+(there_is_a_fork) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & fork(Object).
+(there_is_a_knife) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & knife(Object).
+(there_is_a_spoon) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & spoon(Object).
+(there_is_a_smallKnife) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & smallKnife(Object).
+(there_is_a_plate) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & plate(Object).
+(there_is_a_bowl) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & bowl(Object).
+(there_is_a_pastaPlate) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & pastaPlate(Object).
+(there_is_a_soupPlate) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & soupPlate(Object).
+(there_is_a_saucer) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & saucer(Object).
+(there_is_a_waterGlass) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & waterGlass(Object).
+(there_is_a_wineGlass) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & wineGlass(Object).
+(there_is_a_teaCup) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & teaCup(Object).
+}

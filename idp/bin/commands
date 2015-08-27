@@ -1,0 +1,9 @@
+=== CHECKING === 
+
+cd workspace2/ClausalDiscovery/bin/executable/mac/idp/bin/
+time ./idp problems/checking/checking.idp --nowarnings > errorList.txt
+
+=== EXPANSION ===
+
+cd workspace2/ClausalDiscovery/bin/executable/mac/idp/bin/
+time ./idp problems/expansion/expansion.idp --nowarnings > newErrorList.txt

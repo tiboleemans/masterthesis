@@ -1,0 +1,1523 @@
+vocabulary  V {
+	type RuleNr isa int
+	type Penalty isa int
+	type Object
+	type Time
+
+	type Fork isa Object 
+	type Knife isa Object
+	type Spoon isa Object
+	type SmallKnife isa Object
+	
+	type Plate isa Object
+	type Bowl isa Object
+	type PastaPlate isa Object
+	type SoupPlate isa Object
+	type Saucer isa Object
+
+	type WaterGlass isa Object 
+	type WineGlass isa Object
+	type TeaCup isa Object
+
+	type Breakfast isa Time
+	type Lunch isa Time
+	type Dinner isa Time
+
+	type PossCo isa int
+
+	fork(Fork)
+	knife(Knife)
+	spoon(Spoon)
+	smallKnife(SmallKnife)
+
+	plate(Plate)
+	bowl(Bowl)
+	pastaPlate(PastaPlate)
+	soupPlate(SoupPlate)
+	saucer(Saucer)
+
+	waterGlass(WaterGlass)
+	wineGlass(WineGlass)
+	teaCup(TeaCup)
+
+	food_container(Object)
+	drink_container(Object)
+	food_utensil(Object)
+
+	above_of(Object, Object)
+	left_of(Object, Object)
+	on(Object, Object)
+
+	position(PossCo,PossCo,PossCo,Object)
+	time(Time)
+
+	there_is_a_fork
+	there_is_a_knife
+	there_is_a_spoon
+	there_is_a_smallKnife
+	there_is_a_plate
+	there_is_a_bowl
+	there_is_a_pastaPlate
+	there_is_a_soupPlate
+	there_is_a_saucer
+	there_is_a_waterGlass
+	there_is_a_wineGlass
+	there_is_a_teaCup
+	
+	breakfastTime(Breakfast)
+	lunchTime(Lunch)
+	dinnerTime(Dinner)
+
+	breakfast
+	lunch
+	dinner
+	
+	penalty(RuleNr, Penalty)
+}
+
+term penaltyTerm:V{
+	sum{X, Y : penalty(X, Y) : Y}
+}
+
+theory T : V {
+// Necessary background rules
+!A, B: above_of(A, B) <=>  ? X, Y1, Y2, Z1, Z2 :(position(X, Y1, Z1, A) & position(X, Y2, Z2, B) & Y1 < Y2).
+!A, B: left_of(A, B) <=> ? X1, X2, Y, Z1, Z2 : (position(X1, Y, Z1, A) & position(X2, Y, Z2, B) & X1 + 1 = X2).
+!A, B: on(A, B) <=> ? X, Y, Z1, Z2 : (position(X, Y, Z1, A) & position(X, Y, Z2, B) & Z1 < Z2).
+
+(there_is_a_fork) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & fork(Object).
+(there_is_a_knife) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & knife(Object).
+(there_is_a_spoon) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & spoon(Object).
+(there_is_a_smallKnife) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & smallKnife(Object).
+(there_is_a_plate) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & plate(Object).
+(there_is_a_bowl) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & bowl(Object).
+(there_is_a_pastaPlate) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & pastaPlate(Object).
+(there_is_a_soupPlate) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & soupPlate(Object).
+(there_is_a_saucer) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & saucer(Object).
+(there_is_a_waterGlass) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & waterGlass(Object).
+(there_is_a_wineGlass) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & wineGlass(Object).
+(there_is_a_teaCup) <=> ?X, Y, Z, Object : position(X, Y, Z, Object) & teaCup(Object).
+
+breakfast <=> ?T : time(T) & breakfastTime(T).
+lunch <=> ?T : time(T) & lunchTime(T).
+dinner <=> ?T : time(T) & dinnerTime(T).
+
+
+// Rules that always have to satisfy
+!X : ( left_of(X,X) ) => ( false). 
+!X : ( above_of(X,X) ) => ( false). 
+!X : ( on(X,X) ) => ( false). 
+!X : ( fork(X) & knife(X) ) => ( false). 
+!X : ( fork(X) & spoon(X) ) => ( false). 
+!X : ( fork(X) & plate(X) ) => ( false). 
+!X : ( fork(X) & bowl(X) ) => ( false). 
+!X : ( fork(X) & pastaPlate(X) ) => ( false). 
+!X : ( fork(X) & waterGlass(X) ) => ( false). 
+!X : ( fork(X) & wineGlass(X) ) => ( false). 
+!X : ( fork(X) & teaCup(X) ) => ( false). 
+!X : ( fork(X) ) => ( there_is_a_fork). 
+!X, Y : ( fork(X) & on(X,Y) ) => ( false). 
+!X : ( fork(X) & food_container(X) ) => ( false). 
+!X : ( fork(X) & drink_container(X) ) => ( false). 
+!X : ( fork(X) ) => ( food_utensil(X)). 
+!X : ( knife(X) & spoon(X) ) => ( false). 
+!X : ( knife(X) & plate(X) ) => ( false). 
+!X : ( knife(X) & bowl(X) ) => ( false). 
+!X : ( knife(X) & pastaPlate(X) ) => ( false). 
+!X : ( knife(X) & waterGlass(X) ) => ( false). 
+!X : ( knife(X) & wineGlass(X) ) => ( false). 
+!X : ( knife(X) & teaCup(X) ) => ( false). 
+!X : ( knife(X) ) => ( there_is_a_knife). 
+!X : ( knife(X) ) => ( there_is_a_plate). 
+!X : ( knife(X) & there_is_a_pastaPlate ) => ( false). 
+!X, Y : ( knife(X) & on(X,Y) ) => ( false). 
+!X : ( knife(X) & food_container(X) ) => ( false). 
+!X : ( knife(X) & drink_container(X) ) => ( false). 
+!X : ( knife(X) & dinner ) => ( false). 
+!X : ( knife(X) ) => ( food_utensil(X)). 
+!X : ( spoon(X) & plate(X) ) => ( false). 
+!X : ( spoon(X) & bowl(X) ) => ( false). 
+!X : ( spoon(X) & pastaPlate(X) ) => ( false). 
+!X : ( spoon(X) & waterGlass(X) ) => ( false). 
+!X : ( spoon(X) & wineGlass(X) ) => ( false). 
+!X : ( spoon(X) & teaCup(X) ) => ( false). 
+!X : ( spoon(X) ) => ( there_is_a_spoon). 
+!X, Y : ( spoon(X) & on(X,Y) ) => ( false). 
+!X : ( spoon(X) & food_container(X) ) => ( false). 
+!X : ( spoon(X) & drink_container(X) ) => ( false). 
+!X : ( spoon(X) ) => ( food_utensil(X)). 
+!X : ( plate(X) & bowl(X) ) => ( false). 
+!X : ( plate(X) & pastaPlate(X) ) => ( false). 
+!X : ( plate(X) & waterGlass(X) ) => ( false). 
+!X : ( plate(X) & wineGlass(X) ) => ( false). 
+!X : ( plate(X) & teaCup(X) ) => ( false). 
+!X : ( plate(X) ) => ( there_is_a_knife). 
+!X : ( plate(X) ) => ( there_is_a_plate). 
+!X : ( plate(X) & there_is_a_pastaPlate ) => ( false). 
+!X, Y : ( plate(X) & above_of(X,Y) ) => ( false). 
+!X : ( plate(X) & food_utensil(X) ) => ( false). 
+!X : ( plate(X) & drink_container(X) ) => ( false). 
+!X : ( plate(X) & dinner ) => ( false). 
+!X : ( plate(X) ) => ( food_container(X)). 
+!X : ( bowl(X) & pastaPlate(X) ) => ( false). 
+!X : ( bowl(X) & waterGlass(X) ) => ( false). 
+!X : ( bowl(X) & wineGlass(X) ) => ( false). 
+!X : ( bowl(X) & teaCup(X) ) => ( false). 
+!X : ( bowl(X) ) => ( there_is_a_spoon). 
+!X : ( bowl(X) ) => ( there_is_a_bowl). 
+!X : ( bowl(X) & there_is_a_pastaPlate ) => ( false). 
+!X, Y : ( bowl(X) & above_of(X,Y) ) => ( false). 
+!X, Y : ( bowl(X) & on(X,Y) ) => ( false). 
+!X : ( bowl(X) & food_utensil(X) ) => ( false). 
+!X : ( bowl(X) & drink_container(X) ) => ( false). 
+!X : ( bowl(X) & dinner ) => ( false). 
+!X : ( bowl(X) ) => ( food_container(X)). 
+!X : ( pastaPlate(X) & waterGlass(X) ) => ( false). 
+!X : ( pastaPlate(X) & wineGlass(X) ) => ( false). 
+!X : ( pastaPlate(X) & teaCup(X) ) => ( false). 
+!X : ( pastaPlate(X) ) => ( there_is_a_fork). 
+!X : ( pastaPlate(X) & there_is_a_knife ) => ( false). 
+!X : ( pastaPlate(X) ) => ( there_is_a_spoon). 
+!X : ( pastaPlate(X) & there_is_a_plate ) => ( false). 
+!X : ( pastaPlate(X) & there_is_a_bowl ) => ( false). 
+!X : ( pastaPlate(X) ) => ( there_is_a_pastaPlate). 
+!X : ( pastaPlate(X) & there_is_a_teaCup ) => ( false). 
+!X, Y : ( pastaPlate(X) & above_of(X,Y) ) => ( false). 
+!X, Y : ( pastaPlate(X) & on(X,Y) ) => ( false). 
+!X : ( pastaPlate(X) & food_utensil(X) ) => ( false). 
+!X : ( pastaPlate(X) & drink_container(X) ) => ( false). 
+!X : ( pastaPlate(X) & breakfast ) => ( false). 
+!X : ( pastaPlate(X) ) => ( food_container(X)). 
+!X : ( waterGlass(X) & wineGlass(X) ) => ( false). 
+!X : ( waterGlass(X) & teaCup(X) ) => ( false). 
+!X : ( waterGlass(X) ) => ( there_is_a_waterGlass). 
+!X : ( waterGlass(X) & there_is_a_teaCup ) => ( false). 
+!X, Y : ( waterGlass(X) & above_of(X,Y) ) => ( false). 
+!X, Y : ( waterGlass(X) & on(X,Y) ) => ( false). 
+!X : ( waterGlass(X) & food_utensil(X) ) => ( false). 
+!X : ( waterGlass(X) & food_container(X) ) => ( false). 
+!X : ( waterGlass(X) & dinner ) => ( false). 
+!X : ( waterGlass(X) ) => ( drink_container(X)). 
+!X : ( wineGlass(X) & teaCup(X) ) => ( false). 
+!X : ( wineGlass(X) ) => ( there_is_a_fork). 
+!X : ( wineGlass(X) ) => ( there_is_a_wineGlass). 
+!X : ( wineGlass(X) & there_is_a_teaCup ) => ( false). 
+!X, Y : ( wineGlass(X) & left_of(X,Y) ) => ( false). 
+!X, Y : ( wineGlass(X) & above_of(X,Y) ) => ( false). 
+!X, Y : ( wineGlass(X) & on(X,Y) ) => ( false). 
+!X : ( wineGlass(X) & food_utensil(X) ) => ( false). 
+!X : ( wineGlass(X) & food_container(X) ) => ( false). 
+!X : ( wineGlass(X) & breakfast ) => ( false). 
+!X : ( wineGlass(X) ) => ( drink_container(X)). 
+!X : ( teaCup(X) & there_is_a_pastaPlate ) => ( false). 
+!X : ( teaCup(X) & there_is_a_waterGlass ) => ( false). 
+!X : ( teaCup(X) & there_is_a_wineGlass ) => ( false). 
+!X : ( teaCup(X) ) => ( there_is_a_teaCup). 
+!X, Y : ( teaCup(X) & left_of(X,Y) ) => ( false). 
+!X, Y : ( teaCup(X) & above_of(X,Y) ) => ( false). 
+!X, Y : ( teaCup(X) & on(X,Y) ) => ( false). 
+!X : ( teaCup(X) & food_utensil(X) ) => ( false). 
+!X : ( teaCup(X) & food_container(X) ) => ( false). 
+!X : ( teaCup(X) ) => ( breakfast). 
+!X : ( teaCup(X) & lunch ) => ( false). 
+!X : ( teaCup(X) & dinner ) => ( false). 
+!X : ( teaCup(X) ) => ( drink_container(X)). 
+( there_is_a_pastaPlate ) => ( there_is_a_fork). 
+( there_is_a_wineGlass ) => ( there_is_a_fork). 
+( dinner ) => ( there_is_a_fork). 
+( there_is_a_knife ) => ( there_is_a_plate). 
+( there_is_a_knife & there_is_a_pastaPlate ) => ( false). 
+( there_is_a_knife & dinner ) => ( false). 
+( there_is_a_knife | there_is_a_spoon). 
+( there_is_a_plate ) => ( there_is_a_knife). 
+!X, Y : ( on(X,Y) ) => ( there_is_a_knife). 
+( there_is_a_spoon | there_is_a_plate). 
+( there_is_a_bowl ) => ( there_is_a_spoon). 
+( there_is_a_pastaPlate ) => ( there_is_a_spoon). 
+!X, Y : ( on(X,Y) ) => ( there_is_a_spoon). 
+( dinner ) => ( there_is_a_spoon). 
+( there_is_a_plate & there_is_a_pastaPlate ) => ( false). 
+( there_is_a_plate & dinner ) => ( false). 
+!X, Y : ( on(X,Y) ) => ( there_is_a_plate). 
+( there_is_a_bowl & there_is_a_pastaPlate ) => ( false). 
+( there_is_a_bowl & dinner ) => ( false). 
+!X, Y : ( on(X,Y) ) => ( there_is_a_bowl). 
+( there_is_a_pastaPlate & there_is_a_teaCup ) => ( false). 
+!X, Y : ( there_is_a_pastaPlate & on(X,Y) ) => ( false). 
+( there_is_a_pastaPlate & breakfast ) => ( false). 
+( dinner ) => ( there_is_a_pastaPlate). 
+( there_is_a_waterGlass & there_is_a_teaCup ) => ( false). 
+( there_is_a_waterGlass & dinner ) => ( false). 
+( there_is_a_wineGlass & there_is_a_teaCup ) => ( false). 
+( there_is_a_wineGlass & breakfast ) => ( false). 
+( dinner ) => ( there_is_a_wineGlass). 
+( there_is_a_teaCup ) => ( breakfast). 
+( there_is_a_teaCup & lunch ) => ( false). 
+( there_is_a_teaCup & dinner ) => ( false). 
+!X, Y : ( left_of(X,Y) & above_of(X,Y) ) => ( false). 
+!X, Y : ( left_of(X,Y) & on(X,Y) ) => ( false). 
+!X, Y : ( left_of(X,Y) & waterGlass(Y) ) => ( false). 
+!X, Y : ( left_of(X,Y) & teaCup(Y) ) => ( false). 
+!X, Y : ( left_of(X,Y) & left_of(Y,X) ) => ( false). 
+!X, Y : ( left_of(X,Y) & above_of(Y,X) ) => ( false). 
+!X, Y : ( left_of(X,Y) & on(Y,X) ) => ( false). 
+!X, Y : ( above_of(X,Y) & on(X,Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & food_container(X) ) => ( false). 
+!X, Y : ( above_of(X,Y) & drink_container(X) ) => ( false). 
+!X, Y : ( above_of(X,Y) & fork(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & knife(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & spoon(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & plate(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & bowl(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & pastaPlate(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & above_of(Y,X) ) => ( false). 
+!X, Y : ( above_of(X,Y) & on(Y,X) ) => ( false). 
+!X, Y : ( above_of(X,Y) & food_utensil(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) ) => ( food_utensil(X)). 
+!X, Y : ( above_of(X,Y) & food_container(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) ) => ( drink_container(Y)). 
+!X, Y : ( on(X,Y) & food_utensil(X) ) => ( false). 
+!X, Y : ( on(X,Y) & drink_container(X) ) => ( false). 
+!X, Y : ( on(X,Y) & dinner ) => ( false). 
+!X, Y : ( on(X,Y) & fork(Y) ) => ( false). 
+!X, Y : ( on(X,Y) & knife(Y) ) => ( false). 
+!X, Y : ( on(X,Y) & spoon(Y) ) => ( false). 
+!X, Y : ( on(X,Y) & plate(Y) ) => ( false). 
+!X, Y : ( on(X,Y) ) => ( plate(X)). 
+!X, Y : ( on(X,Y) ) => ( bowl(Y)). 
+!X, Y : ( on(X,Y) & pastaPlate(Y) ) => ( false). 
+!X, Y : ( on(X,Y) & waterGlass(Y) ) => ( false). 
+!X, Y : ( on(X,Y) & wineGlass(Y) ) => ( false). 
+!X, Y : ( on(X,Y) & teaCup(Y) ) => ( false). 
+!X, Y : ( on(X,Y) & on(Y,X) ) => ( false). 
+!X, Y : ( on(X,Y) & food_utensil(Y) ) => ( false). 
+!X, Y : ( on(X,Y) ) => ( food_container(X)). 
+!X, Y : ( on(X,Y) ) => ( food_container(Y)). 
+!X, Y : ( on(X,Y) & drink_container(Y) ) => ( false). 
+!X : ( food_utensil(X) & food_container(X) ) => ( false). 
+!X : ( food_utensil(X) & drink_container(X) ) => ( false). 
+!X : ( food_container(X) & drink_container(X) ) => ( false). 
+( breakfast & lunch ) => ( false). 
+( breakfast & dinner ) => ( false). 
+( lunch & dinner ) => ( false). 
+
+// Maximum set of rules that have to satisfy with penalty
+{
+penalty(0, 1) <- ~(!X, Y : ( fork(X) & there_is_a_knife & above_of(X,Y) ) => ( false)). 
+penalty(1, 1) <- ~(!X : ( fork(X) & there_is_a_bowl ) => ( there_is_a_knife)). 
+penalty(2, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_knife | there_is_a_pastaPlate)). 
+penalty(3, 1) <- ~(!X : ( fork(X) & there_is_a_teaCup ) => ( there_is_a_knife)). 
+penalty(4, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( there_is_a_knife)). 
+penalty(5, 1) <- ~(!X : ( fork(X) & breakfast ) => ( there_is_a_knife)). 
+penalty(6, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( there_is_a_spoon)). 
+penalty(7, 1) <- ~(!X, Y : ( fork(X) & there_is_a_plate & above_of(X,Y) ) => ( false)). 
+penalty(8, 1) <- ~(!X : ( fork(X) & there_is_a_bowl ) => ( there_is_a_plate)). 
+penalty(9, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_plate | there_is_a_pastaPlate)). 
+penalty(10, 1) <- ~(!X : ( fork(X) & there_is_a_teaCup ) => ( there_is_a_plate)). 
+penalty(11, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( there_is_a_plate)). 
+penalty(12, 1) <- ~(!X : ( fork(X) & breakfast ) => ( there_is_a_plate)). 
+penalty(13, 1) <- ~(!X, Y : ( fork(X) & there_is_a_bowl & above_of(X,Y) ) => ( false)). 
+penalty(14, 1) <- ~(!X, Y : ( fork(X) & there_is_a_pastaPlate & left_of(X,Y) ) => ( false)). 
+penalty(15, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( there_is_a_pastaPlate)). 
+penalty(16, 1) <- ~(!X, Y : ( fork(X) & there_is_a_teaCup & above_of(X,Y) ) => ( false)). 
+penalty(17, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & dinner ) => ( false)). 
+penalty(18, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(19, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(20, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & pastaPlate(Y) ) => ( false)). 
+penalty(21, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(22, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & drink_container(Y) ) => ( false)). 
+penalty(23, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) & breakfast ) => ( false)). 
+penalty(24, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) & teaCup(Y) ) => ( false)). 
+penalty(25, 1) <- ~(!X : ( knife(X) ) => ( there_is_a_fork | breakfast)). 
+penalty(26, 1) <- ~(!X : ( knife(X) & lunch ) => ( there_is_a_fork)). 
+penalty(27, 1) <- ~(!X : ( knife(X) & there_is_a_spoon ) => ( there_is_a_bowl)). 
+penalty(28, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) ) => ( there_is_a_spoon)). 
+penalty(29, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) ) => ( there_is_a_bowl)). 
+penalty(30, 1) <- ~(!X : ( knife(X) & there_is_a_wineGlass ) => ( lunch)). 
+penalty(31, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(32, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & knife(Y) ) => ( false)). 
+penalty(33, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) ) => ( spoon(Y))). 
+penalty(34, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & plate(Y) ) => ( false)). 
+penalty(35, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & bowl(Y) ) => ( false)). 
+penalty(36, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & pastaPlate(Y) ) => ( false)). 
+penalty(37, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(38, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) ) => ( food_utensil(Y))). 
+penalty(39, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & food_container(Y) ) => ( false)). 
+penalty(40, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & drink_container(Y) ) => ( false)). 
+penalty(41, 1) <- ~(!X : ( knife(X) ) => ( breakfast | lunch)). 
+penalty(42, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_fork | there_is_a_bowl)). 
+penalty(43, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) ) => ( there_is_a_fork)). 
+penalty(44, 1) <- ~(!X : ( spoon(X) & there_is_a_knife ) => ( there_is_a_bowl)). 
+penalty(45, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & left_of(X,Y) ) => ( false)). 
+penalty(46, 1) <- ~(!X : ( spoon(X) & there_is_a_plate ) => ( there_is_a_bowl)). 
+penalty(47, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & left_of(X,Y) ) => ( false)). 
+penalty(48, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_bowl & left_of(X,Y) ) => ( false)). 
+penalty(49, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_bowl | there_is_a_pastaPlate)). 
+penalty(50, 1) <- ~(!X : ( spoon(X) & there_is_a_teaCup ) => ( there_is_a_bowl)). 
+penalty(51, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) ) => ( there_is_a_bowl)). 
+penalty(52, 1) <- ~(!X : ( spoon(X) & breakfast ) => ( there_is_a_bowl)). 
+penalty(53, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_pastaPlate & above_of(X,Y) ) => ( false)). 
+penalty(54, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) ) => ( there_is_a_pastaPlate)). 
+penalty(55, 1) <- ~(!X : ( spoon(X) & lunch ) => ( there_is_a_waterGlass)). 
+penalty(56, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_teaCup & left_of(X,Y) ) => ( false)). 
+penalty(57, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & breakfast ) => ( false)). 
+penalty(58, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(59, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & knife(Y) ) => ( false)). 
+penalty(60, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(61, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & plate(Y) ) => ( false)). 
+penalty(62, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & bowl(Y) ) => ( false)). 
+penalty(63, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) ) => ( pastaPlate(Y))). 
+penalty(64, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(65, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & food_utensil(Y) ) => ( false)). 
+penalty(66, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) ) => ( food_container(Y))). 
+penalty(67, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) & drink_container(Y) ) => ( false)). 
+penalty(68, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) & dinner ) => ( false)). 
+penalty(69, 1) <- ~(!X : ( plate(X) ) => ( there_is_a_fork | breakfast)). 
+penalty(70, 1) <- ~(!X : ( plate(X) & lunch ) => ( there_is_a_fork)). 
+penalty(71, 1) <- ~(!X : ( plate(X) & there_is_a_spoon ) => ( there_is_a_bowl)). 
+penalty(72, 1) <- ~(!X : ( plate(X) & there_is_a_wineGlass ) => ( lunch)). 
+penalty(73, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(74, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & plate(Y) ) => ( false)). 
+penalty(75, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & bowl(Y) ) => ( false)). 
+penalty(76, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & pastaPlate(Y) ) => ( false)). 
+penalty(77, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(78, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) ) => ( food_utensil(Y))). 
+penalty(79, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & food_container(Y) ) => ( false)). 
+penalty(80, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & drink_container(Y) ) => ( false)). 
+penalty(81, 1) <- ~(!X : ( plate(X) ) => ( breakfast | lunch)). 
+penalty(82, 1) <- ~(!X : ( bowl(X) & there_is_a_fork ) => ( there_is_a_knife)). 
+penalty(83, 1) <- ~(!X : ( bowl(X) & there_is_a_fork ) => ( there_is_a_plate)). 
+penalty(84, 1) <- ~(!X : ( bowl(X) & there_is_a_wineGlass ) => ( there_is_a_knife)). 
+penalty(85, 1) <- ~(!X : ( bowl(X) & there_is_a_wineGlass ) => ( there_is_a_plate)). 
+penalty(86, 1) <- ~(!X : ( bowl(X) & there_is_a_wineGlass ) => ( there_is_a_waterGlass)). 
+penalty(87, 1) <- ~(!X : ( bowl(X) ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(88, 1) <- ~(!X : ( bowl(X) ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(89, 1) <- ~(!X : ( bowl(X) & lunch ) => ( there_is_a_waterGlass)). 
+penalty(90, 1) <- ~(!X : ( bowl(X) & there_is_a_wineGlass ) => ( lunch)). 
+penalty(91, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(92, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) & plate(Y) ) => ( false)). 
+penalty(93, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) & bowl(Y) ) => ( false)). 
+penalty(94, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) & pastaPlate(Y) ) => ( false)). 
+penalty(95, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(96, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) ) => ( food_utensil(Y))). 
+penalty(97, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) & food_container(Y) ) => ( false)). 
+penalty(98, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) & drink_container(Y) ) => ( false)). 
+penalty(99, 1) <- ~(!X : ( bowl(X) ) => ( breakfast | lunch)). 
+penalty(100, 1) <- ~(!X : ( pastaPlate(X) & there_is_a_waterGlass & there_is_a_wineGlass ) => ( false)). 
+penalty(101, 1) <- ~(!X : ( pastaPlate(X) & there_is_a_waterGlass ) => ( lunch)). 
+penalty(102, 1) <- ~(!X : ( pastaPlate(X) ) => ( there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(103, 1) <- ~(!X : ( pastaPlate(X) & lunch ) => ( there_is_a_waterGlass)). 
+penalty(104, 1) <- ~(!X : ( pastaPlate(X) ) => ( there_is_a_waterGlass | dinner)). 
+penalty(105, 1) <- ~(!X : ( pastaPlate(X) & there_is_a_wineGlass & lunch ) => ( false)). 
+penalty(106, 1) <- ~(!X : ( pastaPlate(X) & there_is_a_wineGlass ) => ( dinner)). 
+penalty(107, 1) <- ~(!X : ( pastaPlate(X) ) => ( there_is_a_wineGlass | lunch)). 
+penalty(108, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) ) => ( fork(Y))). 
+penalty(109, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) & knife(Y) ) => ( false)). 
+penalty(110, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(111, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) & plate(Y) ) => ( false)). 
+penalty(112, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) & bowl(Y) ) => ( false)). 
+penalty(113, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) & pastaPlate(Y) ) => ( false)). 
+penalty(114, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(115, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) ) => ( food_utensil(Y))). 
+penalty(116, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) & food_container(Y) ) => ( false)). 
+penalty(117, 1) <- ~(!X, Y : ( pastaPlate(X) & left_of(X,Y) & drink_container(Y) ) => ( false)). 
+penalty(118, 1) <- ~(!X : ( pastaPlate(X) ) => ( lunch | dinner)). 
+penalty(119, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( there_is_a_fork)). 
+penalty(120, 1) <- ~(!X : ( waterGlass(X) & there_is_a_wineGlass ) => ( there_is_a_knife)). 
+penalty(121, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( there_is_a_knife)). 
+penalty(122, 1) <- ~(!X : ( waterGlass(X) & there_is_a_wineGlass ) => ( there_is_a_spoon)). 
+penalty(123, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( there_is_a_spoon)). 
+penalty(124, 1) <- ~(!X : ( waterGlass(X) & there_is_a_wineGlass ) => ( there_is_a_plate)). 
+penalty(125, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( there_is_a_plate)). 
+penalty(126, 1) <- ~(!X : ( waterGlass(X) & there_is_a_wineGlass ) => ( there_is_a_bowl)). 
+penalty(127, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( there_is_a_bowl)). 
+penalty(128, 1) <- ~(!X : ( waterGlass(X) & there_is_a_pastaPlate & there_is_a_wineGlass ) => ( false)). 
+penalty(129, 1) <- ~(!X, Y : ( waterGlass(X) & there_is_a_pastaPlate & left_of(X,Y) ) => ( false)). 
+penalty(130, 1) <- ~(!X : ( waterGlass(X) & there_is_a_pastaPlate ) => ( lunch)). 
+penalty(131, 1) <- ~(!X : ( waterGlass(X) & there_is_a_wineGlass ) => ( lunch)). 
+penalty(132, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( there_is_a_wineGlass)). 
+penalty(133, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & breakfast ) => ( false)). 
+penalty(134, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( lunch)). 
+penalty(135, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(136, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & knife(Y) ) => ( false)). 
+penalty(137, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(138, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & plate(Y) ) => ( false)). 
+penalty(139, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & bowl(Y) ) => ( false)). 
+penalty(140, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & pastaPlate(Y) ) => ( false)). 
+penalty(141, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( wineGlass(Y))). 
+penalty(142, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & food_utensil(Y) ) => ( false)). 
+penalty(143, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) & food_container(Y) ) => ( false)). 
+penalty(144, 1) <- ~(!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( drink_container(Y))). 
+penalty(145, 1) <- ~(!X : ( waterGlass(X) ) => ( breakfast | lunch)). 
+penalty(146, 1) <- ~(!X : ( wineGlass(X) & there_is_a_knife ) => ( lunch)). 
+penalty(147, 1) <- ~(!X : ( wineGlass(X) & there_is_a_bowl ) => ( there_is_a_knife)). 
+penalty(148, 1) <- ~(!X : ( wineGlass(X) ) => ( there_is_a_knife | there_is_a_pastaPlate)). 
+penalty(149, 1) <- ~(!X : ( wineGlass(X) & there_is_a_waterGlass ) => ( there_is_a_knife)). 
+penalty(150, 1) <- ~(!X : ( wineGlass(X) & lunch ) => ( there_is_a_knife)). 
+penalty(151, 1) <- ~(!X : ( wineGlass(X) ) => ( there_is_a_knife | dinner)). 
+penalty(152, 1) <- ~(!X : ( wineGlass(X) & there_is_a_waterGlass ) => ( there_is_a_spoon)). 
+penalty(153, 1) <- ~(!X : ( wineGlass(X) ) => ( there_is_a_spoon | lunch)). 
+penalty(154, 1) <- ~(!X : ( wineGlass(X) & there_is_a_plate ) => ( lunch)). 
+penalty(155, 1) <- ~(!X : ( wineGlass(X) & there_is_a_bowl ) => ( there_is_a_plate)). 
+penalty(156, 1) <- ~(!X : ( wineGlass(X) ) => ( there_is_a_plate | there_is_a_pastaPlate)). 
+penalty(157, 1) <- ~(!X : ( wineGlass(X) & there_is_a_waterGlass ) => ( there_is_a_plate)). 
+penalty(158, 1) <- ~(!X : ( wineGlass(X) & lunch ) => ( there_is_a_plate)). 
+penalty(159, 1) <- ~(!X : ( wineGlass(X) ) => ( there_is_a_plate | dinner)). 
+penalty(160, 1) <- ~(!X : ( wineGlass(X) & there_is_a_bowl ) => ( there_is_a_waterGlass)). 
+penalty(161, 1) <- ~(!X : ( wineGlass(X) & there_is_a_bowl ) => ( lunch)). 
+penalty(162, 1) <- ~(!X : ( wineGlass(X) & there_is_a_waterGlass ) => ( there_is_a_bowl)). 
+penalty(163, 1) <- ~(!X : ( wineGlass(X) & there_is_a_pastaPlate & there_is_a_waterGlass ) => ( false)). 
+penalty(164, 1) <- ~(!X : ( wineGlass(X) & there_is_a_pastaPlate & lunch ) => ( false)). 
+penalty(165, 1) <- ~(!X : ( wineGlass(X) & there_is_a_pastaPlate ) => ( dinner)). 
+penalty(166, 1) <- ~(!X : ( wineGlass(X) ) => ( there_is_a_pastaPlate | lunch)). 
+penalty(167, 1) <- ~(!X : ( wineGlass(X) & there_is_a_waterGlass ) => ( lunch)). 
+penalty(168, 1) <- ~(!X : ( wineGlass(X) ) => ( lunch | dinner)). 
+penalty(169, 1) <- ~(!X : ( teaCup(X) & there_is_a_fork ) => ( there_is_a_knife)). 
+penalty(170, 1) <- ~(!X : ( teaCup(X) & there_is_a_fork ) => ( there_is_a_plate)). 
+penalty(171, 1) <- ~(!X : ( teaCup(X) ) => ( there_is_a_knife | there_is_a_bowl)). 
+penalty(172, 1) <- ~(!X : ( teaCup(X) & there_is_a_spoon ) => ( there_is_a_bowl)). 
+penalty(173, 1) <- ~(!X : ( teaCup(X) ) => ( there_is_a_plate | there_is_a_bowl)). 
+penalty(174, 1) <- ~(( there_is_a_fork & there_is_a_bowl ) => ( there_is_a_knife)). 
+penalty(175, 1) <- ~(( there_is_a_fork ) => ( there_is_a_knife | there_is_a_pastaPlate)). 
+penalty(176, 1) <- ~(( there_is_a_fork & there_is_a_teaCup ) => ( there_is_a_knife)). 
+penalty(177, 1) <- ~(( there_is_a_fork & breakfast ) => ( there_is_a_knife)). 
+penalty(178, 1) <- ~(( there_is_a_fork & there_is_a_bowl ) => ( there_is_a_plate)). 
+penalty(179, 1) <- ~(( there_is_a_fork ) => ( there_is_a_plate | there_is_a_pastaPlate)). 
+penalty(180, 1) <- ~(( there_is_a_fork & there_is_a_teaCup ) => ( there_is_a_plate)). 
+penalty(181, 1) <- ~(( there_is_a_fork & breakfast ) => ( there_is_a_plate)). 
+penalty(182, 1) <- ~(( there_is_a_knife ) => ( there_is_a_fork | breakfast)). 
+penalty(183, 1) <- ~(( there_is_a_knife & lunch ) => ( there_is_a_fork)). 
+penalty(184, 1) <- ~(( there_is_a_fork | there_is_a_knife | there_is_a_bowl)). 
+penalty(185, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_fork | there_is_a_bowl)). 
+penalty(186, 1) <- ~(( there_is_a_fork | there_is_a_spoon | breakfast)). 
+penalty(187, 1) <- ~(( lunch ) => ( there_is_a_fork | there_is_a_spoon)). 
+penalty(188, 1) <- ~(( there_is_a_plate ) => ( there_is_a_fork | breakfast)). 
+penalty(189, 1) <- ~(( there_is_a_plate & lunch ) => ( there_is_a_fork)). 
+penalty(190, 1) <- ~(( there_is_a_fork | there_is_a_plate | there_is_a_bowl)). 
+penalty(191, 1) <- ~(( there_is_a_fork | there_is_a_bowl | breakfast)). 
+penalty(192, 1) <- ~(( lunch ) => ( there_is_a_fork | there_is_a_bowl)). 
+penalty(193, 1) <- ~(( there_is_a_fork | there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(194, 1) <- ~(( there_is_a_fork | there_is_a_waterGlass | breakfast)). 
+penalty(195, 1) <- ~(( lunch ) => ( there_is_a_fork | there_is_a_waterGlass)). 
+penalty(196, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( there_is_a_fork)). 
+penalty(197, 1) <- ~(!X, Y : ( left_of(X,Y) & plate(Y) ) => ( there_is_a_fork)). 
+penalty(198, 1) <- ~(!X, Y : ( left_of(X,Y) & bowl(Y) ) => ( there_is_a_fork)). 
+penalty(199, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | food_utensil(Y))). 
+penalty(200, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_fork)). 
+penalty(201, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( there_is_a_fork)). 
+penalty(202, 1) <- ~(!X, Y : ( on(X,Y) ) => ( there_is_a_fork | breakfast)). 
+penalty(203, 1) <- ~(!X, Y : ( on(X,Y) & lunch ) => ( there_is_a_fork)). 
+penalty(204, 1) <- ~(( there_is_a_fork | breakfast | lunch)). 
+penalty(205, 1) <- ~(( there_is_a_knife & there_is_a_spoon ) => ( there_is_a_bowl)). 
+penalty(206, 1) <- ~(( there_is_a_knife & there_is_a_wineGlass ) => ( lunch)). 
+penalty(207, 1) <- ~(( there_is_a_knife ) => ( breakfast | lunch)). 
+penalty(208, 1) <- ~(( there_is_a_bowl & there_is_a_wineGlass ) => ( there_is_a_knife)). 
+penalty(209, 1) <- ~(( there_is_a_knife | there_is_a_bowl | there_is_a_pastaPlate)). 
+penalty(210, 1) <- ~(( there_is_a_teaCup ) => ( there_is_a_knife | there_is_a_bowl)). 
+penalty(211, 1) <- ~(( breakfast ) => ( there_is_a_knife | there_is_a_bowl)). 
+penalty(212, 1) <- ~(( there_is_a_wineGlass ) => ( there_is_a_knife | there_is_a_pastaPlate)). 
+penalty(213, 1) <- ~(( there_is_a_waterGlass & there_is_a_wineGlass ) => ( there_is_a_knife)). 
+penalty(214, 1) <- ~(( lunch ) => ( there_is_a_knife | there_is_a_waterGlass)). 
+penalty(215, 1) <- ~(( there_is_a_wineGlass & lunch ) => ( there_is_a_knife)). 
+penalty(216, 1) <- ~(( there_is_a_wineGlass ) => ( there_is_a_knife | dinner)). 
+penalty(217, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( there_is_a_knife)). 
+penalty(218, 1) <- ~(!X, Y : ( left_of(X,Y) & bowl(Y) ) => ( there_is_a_knife)). 
+penalty(219, 1) <- ~(!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( there_is_a_knife)). 
+penalty(220, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( there_is_a_knife)). 
+penalty(221, 1) <- ~(( there_is_a_spoon & there_is_a_plate ) => ( there_is_a_bowl)). 
+penalty(222, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_bowl | there_is_a_pastaPlate)). 
+penalty(223, 1) <- ~(( there_is_a_spoon & there_is_a_teaCup ) => ( there_is_a_bowl)). 
+penalty(224, 1) <- ~(( there_is_a_spoon & breakfast ) => ( there_is_a_bowl)). 
+penalty(225, 1) <- ~(( there_is_a_spoon & lunch ) => ( there_is_a_waterGlass)). 
+penalty(226, 1) <- ~(( there_is_a_waterGlass & there_is_a_wineGlass ) => ( there_is_a_spoon)). 
+penalty(227, 1) <- ~(( there_is_a_wineGlass ) => ( there_is_a_spoon | lunch)). 
+penalty(228, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( there_is_a_spoon)). 
+penalty(229, 1) <- ~(!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( there_is_a_spoon)). 
+penalty(230, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( there_is_a_spoon)). 
+penalty(231, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_spoon | knife(X))). 
+penalty(232, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_spoon | plate(X))). 
+penalty(233, 1) <- ~(( there_is_a_spoon | breakfast | lunch)). 
+penalty(234, 1) <- ~(( there_is_a_plate & there_is_a_wineGlass ) => ( lunch)). 
+penalty(235, 1) <- ~(( there_is_a_plate ) => ( breakfast | lunch)). 
+penalty(236, 1) <- ~(( there_is_a_bowl & there_is_a_wineGlass ) => ( there_is_a_plate)). 
+penalty(237, 1) <- ~(( there_is_a_plate | there_is_a_bowl | there_is_a_pastaPlate)). 
+penalty(238, 1) <- ~(( there_is_a_teaCup ) => ( there_is_a_plate | there_is_a_bowl)). 
+penalty(239, 1) <- ~(( breakfast ) => ( there_is_a_plate | there_is_a_bowl)). 
+penalty(240, 1) <- ~(( there_is_a_wineGlass ) => ( there_is_a_plate | there_is_a_pastaPlate)). 
+penalty(241, 1) <- ~(( there_is_a_waterGlass & there_is_a_wineGlass ) => ( there_is_a_plate)). 
+penalty(242, 1) <- ~(( lunch ) => ( there_is_a_plate | there_is_a_waterGlass)). 
+penalty(243, 1) <- ~(( there_is_a_wineGlass & lunch ) => ( there_is_a_plate)). 
+penalty(244, 1) <- ~(( there_is_a_wineGlass ) => ( there_is_a_plate | dinner)). 
+penalty(245, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( there_is_a_plate)). 
+penalty(246, 1) <- ~(!X, Y : ( left_of(X,Y) & bowl(Y) ) => ( there_is_a_plate)). 
+penalty(247, 1) <- ~(!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( there_is_a_plate)). 
+penalty(248, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( there_is_a_plate)). 
+penalty(249, 1) <- ~(( there_is_a_bowl & there_is_a_wineGlass ) => ( there_is_a_waterGlass)). 
+penalty(250, 1) <- ~(( there_is_a_bowl ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(251, 1) <- ~(( there_is_a_bowl ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(252, 1) <- ~(( there_is_a_bowl & lunch ) => ( there_is_a_waterGlass)). 
+penalty(253, 1) <- ~(( there_is_a_bowl & there_is_a_wineGlass ) => ( lunch)). 
+penalty(254, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(255, 1) <- ~(( there_is_a_bowl ) => ( breakfast | lunch)). 
+penalty(256, 1) <- ~(( there_is_a_waterGlass & there_is_a_wineGlass ) => ( there_is_a_bowl)). 
+penalty(257, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( there_is_a_bowl)). 
+penalty(258, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( there_is_a_bowl)). 
+penalty(259, 1) <- ~(!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( there_is_a_bowl)). 
+penalty(260, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( there_is_a_bowl)). 
+penalty(261, 1) <- ~(( there_is_a_pastaPlate & there_is_a_waterGlass & there_is_a_wineGlass ) => ( false)). 
+penalty(262, 1) <- ~(( there_is_a_pastaPlate & there_is_a_waterGlass ) => ( lunch)). 
+penalty(263, 1) <- ~(( there_is_a_pastaPlate ) => ( there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(264, 1) <- ~(( there_is_a_pastaPlate & lunch ) => ( there_is_a_waterGlass)). 
+penalty(265, 1) <- ~(( there_is_a_pastaPlate ) => ( there_is_a_waterGlass | dinner)). 
+penalty(266, 1) <- ~(( there_is_a_pastaPlate & there_is_a_wineGlass & lunch ) => ( false)). 
+penalty(267, 1) <- ~(( there_is_a_pastaPlate & there_is_a_wineGlass ) => ( dinner)). 
+penalty(268, 1) <- ~(( there_is_a_pastaPlate ) => ( there_is_a_wineGlass | lunch)). 
+penalty(269, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & drink_container(X) ) => ( false)). 
+penalty(270, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(271, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(272, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & drink_container(Y) ) => ( false)). 
+penalty(273, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & above_of(X,Y) ) => ( fork(X))). 
+penalty(274, 1) <- ~(!X : ( there_is_a_pastaPlate & food_container(X) ) => ( pastaPlate(X))). 
+penalty(275, 1) <- ~(( there_is_a_pastaPlate ) => ( lunch | dinner)). 
+penalty(276, 1) <- ~(( there_is_a_wineGlass ) => ( there_is_a_pastaPlate | lunch)). 
+penalty(277, 1) <- ~(( there_is_a_pastaPlate | breakfast | lunch)). 
+penalty(278, 1) <- ~(( there_is_a_waterGlass & there_is_a_wineGlass ) => ( lunch)). 
+penalty(279, 1) <- ~(( there_is_a_waterGlass ) => ( breakfast | lunch)). 
+penalty(280, 1) <- ~(!X, Y : ( there_is_a_wineGlass & on(X,Y) ) => ( there_is_a_waterGlass)). 
+penalty(281, 1) <- ~(( there_is_a_waterGlass | there_is_a_wineGlass | there_is_a_teaCup)). 
+penalty(282, 1) <- ~(( there_is_a_waterGlass | there_is_a_wineGlass | breakfast)). 
+penalty(283, 1) <- ~(( lunch ) => ( there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(284, 1) <- ~(!X, Y : ( on(X,Y) ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(285, 1) <- ~(( breakfast ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(286, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( there_is_a_waterGlass)). 
+penalty(287, 1) <- ~(!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( there_is_a_waterGlass)). 
+penalty(288, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( there_is_a_waterGlass)). 
+penalty(289, 1) <- ~(!X, Y : ( on(X,Y) ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(290, 1) <- ~(!X, Y : ( on(X,Y) & lunch ) => ( there_is_a_waterGlass)). 
+penalty(291, 1) <- ~(!X, Y : ( there_is_a_wineGlass & on(X,Y) ) => ( lunch)). 
+penalty(292, 1) <- ~(( there_is_a_wineGlass ) => ( lunch | dinner)). 
+penalty(293, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( there_is_a_wineGlass)). 
+penalty(294, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( there_is_a_wineGlass)). 
+penalty(295, 1) <- ~(!X, Y : ( on(X,Y) ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(296, 1) <- ~(!X, Y : ( on(X,Y) & lunch ) => ( there_is_a_wineGlass)). 
+penalty(297, 1) <- ~(( there_is_a_wineGlass | breakfast | lunch)). 
+penalty(298, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & drink_container(X) ) => ( false)). 
+penalty(299, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(300, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & drink_container(Y) ) => ( false)). 
+penalty(301, 1) <- ~(!X, Y : ( there_is_a_teaCup & above_of(X,Y) ) => ( teaCup(Y))). 
+penalty(302, 1) <- ~(!X : ( there_is_a_teaCup & drink_container(X) ) => ( teaCup(X))). 
+penalty(303, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & fork(Y) ) => ( false)). 
+penalty(304, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & wineGlass(Y) ) => ( false)). 
+penalty(305, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & drink_container(Y) ) => ( false)). 
+penalty(306, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & plate(Y) ) => ( false)). 
+penalty(307, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & bowl(Y) ) => ( false)). 
+penalty(308, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & pastaPlate(Y) ) => ( false)). 
+penalty(309, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & wineGlass(Y) ) => ( false)). 
+penalty(310, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) ) => ( food_utensil(Y))). 
+penalty(311, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & food_container(Y) ) => ( false)). 
+penalty(312, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & drink_container(Y) ) => ( false)). 
+penalty(313, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & breakfast ) => ( false)). 
+penalty(314, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( lunch)). 
+penalty(315, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & dinner ) => ( false)). 
+penalty(316, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & fork(Y) ) => ( false)). 
+penalty(317, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & knife(Y) ) => ( false)). 
+penalty(318, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & spoon(Y) ) => ( false)). 
+penalty(319, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & plate(Y) ) => ( false)). 
+penalty(320, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & bowl(Y) ) => ( false)). 
+penalty(321, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & pastaPlate(Y) ) => ( false)). 
+penalty(322, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( waterGlass(X))). 
+penalty(323, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( wineGlass(Y))). 
+penalty(324, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & food_utensil(Y) ) => ( false)). 
+penalty(325, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) & food_container(Y) ) => ( false)). 
+penalty(326, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( drink_container(Y))). 
+penalty(327, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast & fork(Y) ) => ( false)). 
+penalty(328, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast & drink_container(Y) ) => ( false)). 
+penalty(329, 1) <- ~(!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( lunch)). 
+penalty(330, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( lunch)). 
+penalty(331, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner & spoon(Y) ) => ( false)). 
+penalty(332, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner & wineGlass(Y) ) => ( false)). 
+penalty(333, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner & drink_container(Y) ) => ( false)). 
+penalty(334, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( food_container(X))). 
+penalty(335, 1) <- ~(!X, Y : ( left_of(X,Y) & plate(Y) ) => ( fork(X))). 
+penalty(336, 1) <- ~(!X, Y : ( left_of(X,Y) & bowl(Y) ) => ( fork(X))). 
+penalty(337, 1) <- ~(!X, Y : ( left_of(X,Y) & pastaPlate(Y) ) => ( spoon(X))). 
+penalty(338, 1) <- ~(!X, Y : ( left_of(X,Y) & plate(Y) ) => ( food_utensil(X))). 
+penalty(339, 1) <- ~(!X, Y : ( left_of(X,Y) & bowl(Y) ) => ( food_utensil(X))). 
+penalty(340, 1) <- ~(!X, Y : ( left_of(X,Y) & pastaPlate(Y) ) => ( food_utensil(X))). 
+penalty(341, 1) <- ~(!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( waterGlass(X))). 
+penalty(342, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( waterGlass(X))). 
+penalty(343, 1) <- ~(!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( drink_container(X))). 
+penalty(344, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( wineGlass(Y))). 
+penalty(345, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( food_utensil(X))). 
+penalty(346, 1) <- ~(!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( drink_container(X))). 
+penalty(347, 1) <- ~(!X, Y : ( above_of(X,Y) & dinner ) => ( fork(X))). 
+penalty(348, 1) <- ~(!X, Y : ( above_of(X,Y) & dinner ) => ( wineGlass(Y))). 
+penalty(349, 1) <- ~(!X, Y : ( on(X,Y) ) => ( breakfast | lunch)). 
+penalty(350, 1) <- ~(!X : ( food_container(X) & dinner ) => ( pastaPlate(X))). 
+penalty(351, 1) <- ~(!X : ( drink_container(X) & dinner ) => ( wineGlass(X))). 
+penalty(352, 1) <- ~(( breakfast | lunch | dinner)). 
+penalty(353, 1) <- ~(!X : ( fork(X) & there_is_a_waterGlass ) => ( there_is_a_knife | lunch)). 
+penalty(354, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_knife | there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(355, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_knife | there_is_a_waterGlass | dinner)). 
+penalty(356, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_knife | there_is_a_wineGlass | lunch)). 
+penalty(357, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_knife | lunch | dinner)). 
+penalty(358, 1) <- ~(!X, Y : ( fork(X) & there_is_a_spoon & left_of(X,Y) ) => ( there_is_a_bowl)). 
+penalty(359, 1) <- ~(!X, Y : ( fork(X) & there_is_a_spoon & left_of(X,Y) & knife(Y) ) => ( false)). 
+penalty(360, 1) <- ~(!X, Y : ( fork(X) & there_is_a_spoon & left_of(X,Y) & food_utensil(Y) ) => ( false)). 
+penalty(361, 1) <- ~(!X, Y : ( fork(X) & there_is_a_spoon & left_of(X,Y) ) => ( food_container(Y))). 
+penalty(362, 1) <- ~(!X : ( fork(X) & there_is_a_waterGlass ) => ( there_is_a_plate | lunch)). 
+penalty(363, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_plate | there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(364, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_plate | there_is_a_waterGlass | dinner)). 
+penalty(365, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_plate | there_is_a_wineGlass | lunch)). 
+penalty(366, 1) <- ~(!X : ( fork(X) ) => ( there_is_a_plate | lunch | dinner)). 
+penalty(367, 1) <- ~(!X : ( fork(X) & there_is_a_bowl ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(368, 1) <- ~(!X : ( fork(X) & there_is_a_bowl & lunch ) => ( there_is_a_wineGlass)). 
+penalty(369, 1) <- ~(!X, Y : ( fork(X) & there_is_a_bowl & left_of(X,Y) & knife(Y) ) => ( false)). 
+penalty(370, 1) <- ~(!X, Y : ( fork(X) & there_is_a_bowl & left_of(X,Y) & food_utensil(Y) ) => ( false)). 
+penalty(371, 1) <- ~(!X, Y : ( fork(X) & there_is_a_bowl & left_of(X,Y) ) => ( food_container(Y))). 
+penalty(372, 1) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & there_is_a_wineGlass & above_of(X,Y) ) => ( false)). 
+penalty(373, 1) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & left_of(X,Y) & knife(Y) ) => ( false)). 
+penalty(374, 1) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & left_of(X,Y) & food_utensil(Y) ) => ( false)). 
+penalty(375, 1) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & left_of(X,Y) ) => ( food_container(Y))). 
+penalty(376, 1) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & above_of(X,Y) ) => ( lunch)). 
+penalty(377, 1) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & above_of(X,Y) ) => ( waterGlass(Y))). 
+penalty(378, 1) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & above_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(379, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(380, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) & lunch ) => ( there_is_a_waterGlass)). 
+penalty(381, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( there_is_a_waterGlass | dinner)). 
+penalty(382, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( there_is_a_waterGlass | wineGlass(Y))). 
+penalty(383, 1) <- ~(!X, Y : ( fork(X) & there_is_a_wineGlass & left_of(X,Y) ) => ( lunch)). 
+penalty(384, 1) <- ~(!X, Y : ( fork(X) & there_is_a_wineGlass & above_of(X,Y) & lunch ) => ( false)). 
+penalty(385, 1) <- ~(!X, Y : ( fork(X) & there_is_a_wineGlass & above_of(X,Y) ) => ( dinner)). 
+penalty(386, 1) <- ~(!X, Y : ( fork(X) & there_is_a_wineGlass & above_of(X,Y) & waterGlass(Y) ) => ( false)). 
+penalty(387, 1) <- ~(!X, Y : ( fork(X) & there_is_a_wineGlass & above_of(X,Y) ) => ( wineGlass(Y))). 
+penalty(388, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & knife(Y) ) => ( there_is_a_wineGlass)). 
+penalty(389, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & food_utensil(Y) ) => ( there_is_a_wineGlass)). 
+penalty(390, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( there_is_a_wineGlass | food_container(Y))). 
+penalty(391, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( there_is_a_wineGlass | lunch)). 
+penalty(392, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( there_is_a_wineGlass | waterGlass(Y))). 
+penalty(393, 1) <- ~(!X, Y : ( fork(X) & there_is_a_teaCup & left_of(X,Y) & knife(Y) ) => ( false)). 
+penalty(394, 1) <- ~(!X, Y : ( fork(X) & there_is_a_teaCup & left_of(X,Y) & food_utensil(Y) ) => ( false)). 
+penalty(395, 1) <- ~(!X, Y : ( fork(X) & there_is_a_teaCup & left_of(X,Y) ) => ( food_container(Y))). 
+penalty(396, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & breakfast & knife(Y) ) => ( false)). 
+penalty(397, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & breakfast & food_utensil(Y) ) => ( false)). 
+penalty(398, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & breakfast ) => ( food_container(Y))). 
+penalty(399, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( breakfast | lunch)). 
+penalty(400, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & knife(Y) ) => ( lunch)). 
+penalty(401, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & food_utensil(Y) ) => ( lunch)). 
+penalty(402, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( lunch | food_container(Y))). 
+penalty(403, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & food_utensil(Y) ) => ( knife(Y))). 
+penalty(404, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( knife(Y) | food_container(Y))). 
+penalty(405, 1) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( food_utensil(Y) | food_container(Y))). 
+penalty(406, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) & lunch ) => ( waterGlass(Y))). 
+penalty(407, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) & lunch & wineGlass(Y) ) => ( false)). 
+penalty(408, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( lunch | dinner)). 
+penalty(409, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) & waterGlass(Y) ) => ( lunch)). 
+penalty(410, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( lunch | wineGlass(Y))). 
+penalty(411, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( dinner | waterGlass(Y))). 
+penalty(412, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) & wineGlass(Y) ) => ( dinner)). 
+penalty(413, 1) <- ~(!X, Y : ( fork(X) & above_of(X,Y) ) => ( waterGlass(Y) | wineGlass(Y))). 
+penalty(414, 1) <- ~(!X : ( knife(X) & there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_waterGlass)). 
+penalty(415, 1) <- ~(!X : ( knife(X) & there_is_a_spoon ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(416, 1) <- ~(!X : ( knife(X) & there_is_a_spoon ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(417, 1) <- ~(!X : ( knife(X) & there_is_a_spoon ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(418, 1) <- ~(!X : ( knife(X) & there_is_a_spoon & lunch ) => ( there_is_a_wineGlass)). 
+penalty(419, 1) <- ~(!X, Y : ( knife(X) & there_is_a_spoon & above_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(420, 1) <- ~(!X : ( knife(X) & there_is_a_bowl ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(421, 1) <- ~(!X : ( knife(X) & there_is_a_bowl & lunch ) => ( there_is_a_wineGlass)). 
+penalty(422, 1) <- ~(!X, Y : ( knife(X) & there_is_a_bowl & above_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(423, 1) <- ~(!X, Y : ( knife(X) & there_is_a_waterGlass & above_of(X,Y) ) => ( waterGlass(Y))). 
+penalty(424, 1) <- ~(!X, Y : ( knife(X) & there_is_a_waterGlass & above_of(X,Y) & wineGlass(Y) ) => ( false)). 
+penalty(425, 1) <- ~(!X, Y : ( knife(X) & there_is_a_wineGlass & left_of(X,Y) ) => ( there_is_a_waterGlass)). 
+penalty(426, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(427, 1) <- ~(!X : ( knife(X) ) => ( there_is_a_waterGlass | there_is_a_teaCup | lunch)). 
+penalty(428, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(429, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & lunch ) => ( there_is_a_waterGlass)). 
+penalty(430, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(431, 1) <- ~(!X, Y : ( knife(X) & left_of(X,Y) & lunch ) => ( there_is_a_wineGlass)). 
+penalty(432, 1) <- ~(!X, Y : ( knife(X) & above_of(X,Y) & wineGlass(Y) ) => ( lunch)). 
+penalty(433, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) ) => ( there_is_a_knife)). 
+penalty(434, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) ) => ( there_is_a_plate)). 
+penalty(435, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) ) => ( there_is_a_waterGlass)). 
+penalty(436, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) ) => ( there_is_a_wineGlass)). 
+penalty(437, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & there_is_a_teaCup & above_of(X,Y) ) => ( false)). 
+penalty(438, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) & breakfast ) => ( false)). 
+penalty(439, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) ) => ( lunch)). 
+penalty(440, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) & waterGlass(Y) ) => ( false)). 
+penalty(441, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) ) => ( wineGlass(Y))). 
+penalty(442, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_fork & above_of(X,Y) & teaCup(Y) ) => ( false)). 
+penalty(443, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & above_of(X,Y) ) => ( there_is_a_fork)). 
+penalty(444, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & above_of(X,Y) ) => ( there_is_a_fork)). 
+penalty(445, 1) <- ~(!X : ( spoon(X) & there_is_a_knife & there_is_a_wineGlass ) => ( there_is_a_waterGlass)). 
+penalty(446, 1) <- ~(!X : ( spoon(X) & there_is_a_knife ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(447, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & above_of(X,Y) ) => ( there_is_a_waterGlass)). 
+penalty(448, 1) <- ~(!X : ( spoon(X) & there_is_a_knife ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(449, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & above_of(X,Y) ) => ( there_is_a_wineGlass)). 
+penalty(450, 1) <- ~(!X : ( spoon(X) & there_is_a_knife ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(451, 1) <- ~(!X : ( spoon(X) & there_is_a_knife & lunch ) => ( there_is_a_wineGlass)). 
+penalty(452, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & there_is_a_teaCup & above_of(X,Y) ) => ( false)). 
+penalty(453, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & above_of(X,Y) & breakfast ) => ( false)). 
+penalty(454, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & above_of(X,Y) ) => ( lunch)). 
+penalty(455, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & above_of(X,Y) & waterGlass(Y) ) => ( false)). 
+penalty(456, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & above_of(X,Y) ) => ( wineGlass(Y))). 
+penalty(457, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_knife & above_of(X,Y) & teaCup(Y) ) => ( false)). 
+penalty(458, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_knife)). 
+penalty(459, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) & wineGlass(Y) ) => ( there_is_a_knife)). 
+penalty(460, 1) <- ~(!X : ( spoon(X) & there_is_a_plate & there_is_a_wineGlass ) => ( there_is_a_waterGlass)). 
+penalty(461, 1) <- ~(!X : ( spoon(X) & there_is_a_plate ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(462, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & above_of(X,Y) ) => ( there_is_a_waterGlass)). 
+penalty(463, 1) <- ~(!X : ( spoon(X) & there_is_a_plate ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(464, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & above_of(X,Y) ) => ( there_is_a_wineGlass)). 
+penalty(465, 1) <- ~(!X : ( spoon(X) & there_is_a_plate ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(466, 1) <- ~(!X : ( spoon(X) & there_is_a_plate & lunch ) => ( there_is_a_wineGlass)). 
+penalty(467, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & there_is_a_teaCup & above_of(X,Y) ) => ( false)). 
+penalty(468, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & above_of(X,Y) & breakfast ) => ( false)). 
+penalty(469, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & above_of(X,Y) ) => ( lunch)). 
+penalty(470, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & above_of(X,Y) & waterGlass(Y) ) => ( false)). 
+penalty(471, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & above_of(X,Y) ) => ( wineGlass(Y))). 
+penalty(472, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_plate & above_of(X,Y) & teaCup(Y) ) => ( false)). 
+penalty(473, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_plate)). 
+penalty(474, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) & wineGlass(Y) ) => ( there_is_a_plate)). 
+penalty(475, 1) <- ~(!X : ( spoon(X) & there_is_a_waterGlass ) => ( there_is_a_bowl | lunch)). 
+penalty(476, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_bowl | there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(477, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_bowl | there_is_a_waterGlass | dinner)). 
+penalty(478, 1) <- ~(!X : ( spoon(X) & there_is_a_wineGlass & lunch ) => ( there_is_a_bowl)). 
+penalty(479, 1) <- ~(!X : ( spoon(X) & there_is_a_wineGlass ) => ( there_is_a_bowl | dinner)). 
+penalty(480, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_bowl | there_is_a_wineGlass | lunch)). 
+penalty(481, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_bowl | lunch | dinner)). 
+penalty(482, 1) <- ~(!X : ( spoon(X) & there_is_a_wineGlass ) => ( there_is_a_pastaPlate | there_is_a_waterGlass)). 
+penalty(483, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_pastaPlate | there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(484, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_pastaPlate | there_is_a_waterGlass | breakfast)). 
+penalty(485, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_waterGlass & there_is_a_wineGlass & left_of(X,Y) ) => ( false)). 
+penalty(486, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_waterGlass & left_of(X,Y) ) => ( lunch)). 
+penalty(487, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_waterGlass)). 
+penalty(488, 1) <- ~(!X : ( spoon(X) & there_is_a_wineGlass ) => ( there_is_a_waterGlass | dinner)). 
+penalty(489, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) ) => ( there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(490, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(491, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_waterGlass | there_is_a_teaCup | dinner)). 
+penalty(492, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) ) => ( there_is_a_waterGlass | dinner)). 
+penalty(493, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(494, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) & wineGlass(Y) ) => ( there_is_a_waterGlass)). 
+penalty(495, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) ) => ( there_is_a_waterGlass | teaCup(Y))). 
+penalty(496, 1) <- ~(!X : ( spoon(X) ) => ( there_is_a_waterGlass | breakfast | dinner)). 
+penalty(497, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_wineGlass & left_of(X,Y) & lunch ) => ( false)). 
+penalty(498, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_wineGlass & left_of(X,Y) ) => ( dinner)). 
+penalty(499, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_wineGlass & above_of(X,Y) ) => ( lunch)). 
+penalty(500, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_wineGlass & above_of(X,Y) & waterGlass(Y) ) => ( false)). 
+penalty(501, 1) <- ~(!X, Y : ( spoon(X) & there_is_a_wineGlass & above_of(X,Y) ) => ( wineGlass(Y))). 
+penalty(502, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) ) => ( there_is_a_wineGlass | lunch)). 
+penalty(503, 1) <- ~(!X, Y : ( spoon(X) & left_of(X,Y) ) => ( lunch | dinner)). 
+penalty(504, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) ) => ( breakfast | lunch)). 
+penalty(505, 1) <- ~(!X, Y : ( spoon(X) & above_of(X,Y) & wineGlass(Y) ) => ( lunch)). 
+penalty(506, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) ) => ( there_is_a_fork | knife(Y))). 
+penalty(507, 1) <- ~(!X : ( plate(X) & there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_waterGlass)). 
+penalty(508, 1) <- ~(!X : ( plate(X) & there_is_a_spoon ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(509, 1) <- ~(!X : ( plate(X) & there_is_a_spoon ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(510, 1) <- ~(!X : ( plate(X) & there_is_a_spoon ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(511, 1) <- ~(!X : ( plate(X) & there_is_a_spoon & lunch ) => ( there_is_a_wineGlass)). 
+penalty(512, 1) <- ~(!X, Y : ( plate(X) & there_is_a_spoon & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(513, 1) <- ~(!X, Y : ( plate(X) & there_is_a_spoon & left_of(X,Y) ) => ( knife(Y))). 
+penalty(514, 1) <- ~(!X : ( plate(X) & there_is_a_bowl ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(515, 1) <- ~(!X : ( plate(X) & there_is_a_bowl & lunch ) => ( there_is_a_wineGlass)). 
+penalty(516, 1) <- ~(!X, Y : ( plate(X) & there_is_a_bowl & left_of(X,Y) ) => ( knife(Y))). 
+penalty(517, 1) <- ~(!X, Y : ( plate(X) & there_is_a_waterGlass & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(518, 1) <- ~(!X, Y : ( plate(X) & there_is_a_waterGlass & left_of(X,Y) ) => ( knife(Y))). 
+penalty(519, 1) <- ~(!X : ( plate(X) ) => ( there_is_a_waterGlass | there_is_a_teaCup | lunch)). 
+penalty(520, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & fork(Y) ) => ( there_is_a_wineGlass)). 
+penalty(521, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) ) => ( there_is_a_wineGlass | knife(Y))). 
+penalty(522, 1) <- ~(!X, Y : ( plate(X) & there_is_a_teaCup & left_of(X,Y) ) => ( knife(Y))). 
+penalty(523, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & breakfast ) => ( knife(Y))). 
+penalty(524, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & fork(Y) ) => ( lunch)). 
+penalty(525, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) ) => ( lunch | knife(Y))). 
+penalty(526, 1) <- ~(!X, Y : ( plate(X) & left_of(X,Y) ) => ( fork(Y) | knife(Y))). 
+penalty(527, 1) <- ~(!X : ( bowl(X) & there_is_a_fork ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(528, 1) <- ~(!X : ( bowl(X) & there_is_a_fork & lunch ) => ( there_is_a_wineGlass)). 
+penalty(529, 1) <- ~(!X, Y : ( bowl(X) & there_is_a_fork & left_of(X,Y) ) => ( knife(Y))). 
+penalty(530, 1) <- ~(!X, Y : ( bowl(X) & there_is_a_fork & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(531, 1) <- ~(!X : ( bowl(X) & there_is_a_knife ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(532, 1) <- ~(!X : ( bowl(X) & there_is_a_knife & lunch ) => ( there_is_a_wineGlass)). 
+penalty(533, 1) <- ~(!X, Y : ( bowl(X) & there_is_a_knife & left_of(X,Y) ) => ( knife(Y))). 
+penalty(534, 1) <- ~(!X, Y : ( bowl(X) & there_is_a_knife & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(535, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) ) => ( there_is_a_knife | spoon(Y))). 
+penalty(536, 1) <- ~(!X : ( bowl(X) & there_is_a_plate ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(537, 1) <- ~(!X : ( bowl(X) & there_is_a_plate & lunch ) => ( there_is_a_wineGlass)). 
+penalty(538, 1) <- ~(!X, Y : ( bowl(X) & there_is_a_plate & left_of(X,Y) ) => ( knife(Y))). 
+penalty(539, 1) <- ~(!X, Y : ( bowl(X) & there_is_a_plate & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(540, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) ) => ( there_is_a_plate | spoon(Y))). 
+penalty(541, 1) <- ~(!X, Y : ( bowl(X) & there_is_a_wineGlass & left_of(X,Y) ) => ( knife(Y))). 
+penalty(542, 1) <- ~(!X, Y : ( bowl(X) & there_is_a_wineGlass & left_of(X,Y) & spoon(Y) ) => ( false)). 
+penalty(543, 1) <- ~(!X, Y : ( bowl(X) & left_of(X,Y) ) => ( knife(Y) | spoon(Y))). 
+penalty(544, 1) <- ~(!X : ( waterGlass(X) & there_is_a_fork ) => ( there_is_a_knife | lunch)). 
+penalty(545, 1) <- ~(!X : ( waterGlass(X) & there_is_a_fork ) => ( there_is_a_plate | lunch)). 
+penalty(546, 1) <- ~(!X : ( waterGlass(X) ) => ( there_is_a_knife | there_is_a_bowl | lunch)). 
+penalty(547, 1) <- ~(!X : ( waterGlass(X) & there_is_a_spoon ) => ( there_is_a_bowl | lunch)). 
+penalty(548, 1) <- ~(!X : ( waterGlass(X) ) => ( there_is_a_plate | there_is_a_bowl | lunch)). 
+penalty(549, 1) <- ~(!X : ( wineGlass(X) & there_is_a_knife & there_is_a_spoon ) => ( there_is_a_waterGlass)). 
+penalty(550, 1) <- ~(!X : ( wineGlass(X) & there_is_a_spoon & there_is_a_plate ) => ( there_is_a_waterGlass)). 
+penalty(551, 1) <- ~(!X : ( wineGlass(X) & there_is_a_spoon & lunch ) => ( there_is_a_bowl)). 
+penalty(552, 1) <- ~(!X : ( wineGlass(X) & there_is_a_spoon ) => ( there_is_a_bowl | dinner)). 
+penalty(553, 1) <- ~(!X : ( wineGlass(X) & there_is_a_spoon ) => ( there_is_a_pastaPlate | there_is_a_waterGlass)). 
+penalty(554, 1) <- ~(!X : ( wineGlass(X) & there_is_a_spoon ) => ( there_is_a_waterGlass | dinner)). 
+penalty(555, 1) <- ~(( there_is_a_fork & there_is_a_waterGlass ) => ( there_is_a_knife | lunch)). 
+penalty(556, 1) <- ~(( there_is_a_fork ) => ( there_is_a_knife | there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(557, 1) <- ~(( there_is_a_fork ) => ( there_is_a_knife | there_is_a_waterGlass | dinner)). 
+penalty(558, 1) <- ~(( there_is_a_fork ) => ( there_is_a_knife | there_is_a_wineGlass | lunch)). 
+penalty(559, 1) <- ~(!X, Y : ( there_is_a_fork & left_of(X,Y) & spoon(Y) ) => ( there_is_a_knife)). 
+penalty(560, 1) <- ~(!X, Y : ( there_is_a_fork & above_of(X,Y) ) => ( there_is_a_knife | fork(X))). 
+penalty(561, 1) <- ~(!X : ( there_is_a_fork & food_container(X) ) => ( there_is_a_knife | pastaPlate(X))). 
+penalty(562, 1) <- ~(( there_is_a_fork ) => ( there_is_a_knife | lunch | dinner)). 
+penalty(563, 1) <- ~(( there_is_a_fork & there_is_a_waterGlass ) => ( there_is_a_plate | lunch)). 
+penalty(564, 1) <- ~(( there_is_a_fork ) => ( there_is_a_plate | there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(565, 1) <- ~(( there_is_a_fork ) => ( there_is_a_plate | there_is_a_waterGlass | dinner)). 
+penalty(566, 1) <- ~(( there_is_a_fork ) => ( there_is_a_plate | there_is_a_wineGlass | lunch)). 
+penalty(567, 1) <- ~(!X, Y : ( there_is_a_fork & left_of(X,Y) & spoon(Y) ) => ( there_is_a_plate)). 
+penalty(568, 1) <- ~(!X, Y : ( there_is_a_fork & above_of(X,Y) ) => ( there_is_a_plate | fork(X))). 
+penalty(569, 1) <- ~(!X : ( there_is_a_fork & food_container(X) ) => ( there_is_a_plate | pastaPlate(X))). 
+penalty(570, 1) <- ~(( there_is_a_fork ) => ( there_is_a_plate | lunch | dinner)). 
+penalty(571, 1) <- ~(( there_is_a_fork & there_is_a_bowl ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(572, 1) <- ~(( there_is_a_fork & there_is_a_bowl & lunch ) => ( there_is_a_wineGlass)). 
+penalty(573, 1) <- ~(!X, Y : ( there_is_a_fork & there_is_a_teaCup & above_of(X,Y) ) => ( knife(X))). 
+penalty(574, 1) <- ~(!X, Y : ( there_is_a_fork & left_of(X,Y) & food_container(X) & spoon(Y) ) => ( false)). 
+penalty(575, 1) <- ~(!X, Y : ( there_is_a_fork & left_of(X,Y) & spoon(Y) ) => ( knife(X))). 
+penalty(576, 1) <- ~(!X, Y : ( there_is_a_fork & left_of(X,Y) & spoon(Y) ) => ( food_utensil(X))). 
+penalty(577, 1) <- ~(!X, Y : ( there_is_a_fork & above_of(X,Y) & breakfast ) => ( knife(X))). 
+penalty(578, 1) <- ~(!X, Y : ( there_is_a_fork & above_of(X,Y) & teaCup(Y) ) => ( knife(X))). 
+penalty(579, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) ) => ( there_is_a_fork | knife(X))). 
+penalty(580, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_fork | there_is_a_knife)). 
+penalty(581, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_knife | spoon(Y))). 
+penalty(582, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_knife | bowl(X))). 
+penalty(583, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_knife | food_container(X))). 
+penalty(584, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | there_is_a_knife | spoon(X))). 
+penalty(585, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_fork | there_is_a_knife | spoon(X))). 
+penalty(586, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_fork | there_is_a_knife | bowl(X))). 
+penalty(587, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_fork | there_is_a_spoon)). 
+penalty(588, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_spoon | knife(Y))). 
+penalty(589, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_spoon | plate(X))). 
+penalty(590, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_spoon | food_container(X))). 
+penalty(591, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_fork | there_is_a_spoon | knife(X))). 
+penalty(592, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) ) => ( there_is_a_fork | knife(X))). 
+penalty(593, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_fork | there_is_a_plate)). 
+penalty(594, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_plate | spoon(Y))). 
+penalty(595, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_plate | bowl(X))). 
+penalty(596, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_plate | food_container(X))). 
+penalty(597, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | there_is_a_plate | spoon(X))). 
+penalty(598, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_fork | there_is_a_plate | spoon(X))). 
+penalty(599, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_fork | there_is_a_plate | bowl(X))). 
+penalty(600, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_fork | there_is_a_bowl)). 
+penalty(601, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_bowl | knife(Y))). 
+penalty(602, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_bowl | plate(X))). 
+penalty(603, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | there_is_a_bowl | food_container(X))). 
+penalty(604, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | there_is_a_bowl | knife(X))). 
+penalty(605, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_fork | there_is_a_bowl | knife(X))). 
+penalty(606, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_fork | there_is_a_bowl | plate(X))). 
+penalty(607, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( there_is_a_fork | waterGlass(Y))). 
+penalty(608, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( there_is_a_fork | waterGlass(X))). 
+penalty(609, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | there_is_a_waterGlass | teaCup(Y))). 
+penalty(610, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_fork | there_is_a_waterGlass | teaCup(X))). 
+penalty(611, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | there_is_a_teaCup | waterGlass(Y))). 
+penalty(612, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_fork | there_is_a_teaCup | waterGlass(X))). 
+penalty(613, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_fork | breakfast)). 
+penalty(614, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & lunch ) => ( there_is_a_fork)). 
+penalty(615, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( there_is_a_fork)). 
+penalty(616, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_fork | knife(X))). 
+penalty(617, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_fork | spoon(Y))). 
+penalty(618, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | breakfast | spoon(Y))). 
+penalty(619, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | breakfast | bowl(X))). 
+penalty(620, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | breakfast | food_container(X))). 
+penalty(621, 1) <- ~(!X, Y : ( left_of(X,Y) & lunch ) => ( there_is_a_fork | spoon(Y))). 
+penalty(622, 1) <- ~(!X, Y : ( left_of(X,Y) & lunch ) => ( there_is_a_fork | bowl(X))). 
+penalty(623, 1) <- ~(!X, Y : ( left_of(X,Y) & lunch ) => ( there_is_a_fork | food_container(X))). 
+penalty(624, 1) <- ~(!X, Y : ( left_of(X,Y) & knife(Y) ) => ( there_is_a_fork | food_container(X))). 
+penalty(625, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | knife(X) | food_container(X))). 
+penalty(626, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | knife(Y) | spoon(Y))). 
+penalty(627, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | spoon(Y) | food_container(X))). 
+penalty(628, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_fork | food_utensil(X) | food_container(X))). 
+penalty(629, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | breakfast | spoon(X))). 
+penalty(630, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | breakfast | waterGlass(Y))). 
+penalty(631, 1) <- ~(!X, Y : ( above_of(X,Y) & lunch ) => ( there_is_a_fork | spoon(X))). 
+penalty(632, 1) <- ~(!X, Y : ( above_of(X,Y) & lunch ) => ( there_is_a_fork | waterGlass(Y))). 
+penalty(633, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | knife(X) | spoon(X))). 
+penalty(634, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_fork | waterGlass(Y) | teaCup(Y))). 
+penalty(635, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_fork | breakfast | spoon(X))). 
+penalty(636, 1) <- ~(!X : ( food_utensil(X) & lunch ) => ( there_is_a_fork | spoon(X))). 
+penalty(637, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_fork | knife(X) | spoon(X))). 
+penalty(638, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_fork | breakfast | bowl(X))). 
+penalty(639, 1) <- ~(!X : ( food_container(X) & lunch ) => ( there_is_a_fork | bowl(X))). 
+penalty(640, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_fork | plate(X) | bowl(X))). 
+penalty(641, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_fork | breakfast | waterGlass(X))). 
+penalty(642, 1) <- ~(!X : ( drink_container(X) & lunch ) => ( there_is_a_fork | waterGlass(X))). 
+penalty(643, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_fork | waterGlass(X) | teaCup(X))). 
+penalty(644, 1) <- ~(( there_is_a_knife & there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_waterGlass)). 
+penalty(645, 1) <- ~(( there_is_a_knife & there_is_a_spoon ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(646, 1) <- ~(( there_is_a_knife & there_is_a_spoon ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(647, 1) <- ~(( there_is_a_knife & there_is_a_spoon ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(648, 1) <- ~(( there_is_a_knife & there_is_a_spoon & lunch ) => ( there_is_a_wineGlass)). 
+penalty(649, 1) <- ~(!X, Y : ( there_is_a_knife & there_is_a_spoon & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(650, 1) <- ~(( there_is_a_knife & there_is_a_bowl ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(651, 1) <- ~(( there_is_a_knife & there_is_a_bowl & lunch ) => ( there_is_a_wineGlass)). 
+penalty(652, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) ) => ( there_is_a_bowl | knife(X))). 
+penalty(653, 1) <- ~(!X : ( there_is_a_knife & food_container(X) ) => ( there_is_a_bowl | plate(X))). 
+penalty(654, 1) <- ~(!X, Y : ( there_is_a_knife & there_is_a_waterGlass & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(655, 1) <- ~(( there_is_a_knife ) => ( there_is_a_waterGlass | there_is_a_teaCup | lunch)). 
+penalty(656, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) ) => ( there_is_a_waterGlass | knife(X))). 
+penalty(657, 1) <- ~(!X, Y : ( there_is_a_knife & left_of(X,Y) & fork(Y) ) => ( there_is_a_wineGlass)). 
+penalty(658, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) ) => ( there_is_a_wineGlass | knife(X))). 
+penalty(659, 1) <- ~(!X, Y : ( there_is_a_knife & there_is_a_teaCup & above_of(X,Y) ) => ( knife(X))). 
+penalty(660, 1) <- ~(!X, Y : ( there_is_a_knife & left_of(X,Y) & food_container(X) & spoon(Y) ) => ( false)). 
+penalty(661, 1) <- ~(!X, Y : ( there_is_a_knife & left_of(X,Y) & fork(Y) ) => ( lunch)). 
+penalty(662, 1) <- ~(!X, Y : ( there_is_a_knife & left_of(X,Y) & fork(Y) ) => ( plate(X))). 
+penalty(663, 1) <- ~(!X, Y : ( there_is_a_knife & left_of(X,Y) & food_container(Y) ) => ( fork(X))). 
+penalty(664, 1) <- ~(!X, Y : ( there_is_a_knife & left_of(X,Y) & spoon(Y) ) => ( knife(X))). 
+penalty(665, 1) <- ~(!X, Y : ( there_is_a_knife & left_of(X,Y) & spoon(Y) ) => ( food_utensil(X))). 
+penalty(666, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) & breakfast ) => ( knife(X))). 
+penalty(667, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) ) => ( lunch | knife(X))). 
+penalty(668, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) ) => ( knife(X) | spoon(X))). 
+penalty(669, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) & waterGlass(Y) ) => ( knife(X))). 
+penalty(670, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) ) => ( knife(X) | wineGlass(Y))). 
+penalty(671, 1) <- ~(!X, Y : ( there_is_a_knife & above_of(X,Y) & teaCup(Y) ) => ( knife(X))). 
+penalty(672, 1) <- ~(!X : ( there_is_a_knife & food_container(X) ) => ( plate(X) | bowl(X))). 
+penalty(673, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) & food_utensil(X) ) => ( there_is_a_knife)). 
+penalty(674, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) ) => ( there_is_a_knife | spoon(Y))). 
+penalty(675, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) ) => ( there_is_a_knife | bowl(X))). 
+penalty(676, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) ) => ( there_is_a_knife | food_utensil(Y))). 
+penalty(677, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) & food_container(Y) ) => ( there_is_a_knife)). 
+penalty(678, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) ) => ( there_is_a_knife | food_container(X))). 
+penalty(679, 1) <- ~(!X, Y : ( there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_knife | spoon(X))). 
+penalty(680, 1) <- ~(!X : ( there_is_a_bowl & food_utensil(X) ) => ( there_is_a_knife | spoon(X))). 
+penalty(681, 1) <- ~(!X : ( there_is_a_bowl & food_container(X) ) => ( there_is_a_knife | bowl(X))). 
+penalty(682, 1) <- ~(( there_is_a_waterGlass ) => ( there_is_a_knife | there_is_a_bowl | lunch)). 
+penalty(683, 1) <- ~(( there_is_a_knife | there_is_a_bowl | there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(684, 1) <- ~(( there_is_a_knife | there_is_a_bowl | there_is_a_waterGlass | dinner)). 
+penalty(685, 1) <- ~(( there_is_a_knife | there_is_a_bowl | there_is_a_wineGlass | lunch)). 
+penalty(686, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_knife | there_is_a_bowl | fork(X))). 
+penalty(687, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_knife | there_is_a_bowl | pastaPlate(X))). 
+penalty(688, 1) <- ~(( there_is_a_knife | there_is_a_bowl | lunch | dinner)). 
+penalty(689, 1) <- ~(( there_is_a_knife | there_is_a_pastaPlate | there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(690, 1) <- ~(( there_is_a_knife | there_is_a_pastaPlate | there_is_a_waterGlass | breakfast)). 
+penalty(691, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_knife | there_is_a_pastaPlate)). 
+penalty(692, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | there_is_a_pastaPlate | spoon(Y))). 
+penalty(693, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | there_is_a_pastaPlate | bowl(X))). 
+penalty(694, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | there_is_a_pastaPlate | food_utensil(Y))). 
+penalty(695, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_knife | there_is_a_pastaPlate)). 
+penalty(696, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | there_is_a_pastaPlate | food_container(X))). 
+penalty(697, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_knife | there_is_a_pastaPlate | spoon(X))). 
+penalty(698, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_knife | there_is_a_pastaPlate | spoon(X))). 
+penalty(699, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_knife | there_is_a_pastaPlate | bowl(X))). 
+penalty(700, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( there_is_a_knife | waterGlass(Y))). 
+penalty(701, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( there_is_a_knife | waterGlass(X))). 
+penalty(702, 1) <- ~(( there_is_a_knife | there_is_a_waterGlass | there_is_a_teaCup | dinner)). 
+penalty(703, 1) <- ~(( there_is_a_knife | there_is_a_waterGlass | breakfast | dinner)). 
+penalty(704, 1) <- ~(!X, Y : ( there_is_a_wineGlass & left_of(X,Y) & spoon(Y) ) => ( there_is_a_knife)). 
+penalty(705, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_knife | fork(X))). 
+penalty(706, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_knife | wineGlass(Y))). 
+penalty(707, 1) <- ~(!X : ( there_is_a_wineGlass & food_container(X) ) => ( there_is_a_knife | pastaPlate(X))). 
+penalty(708, 1) <- ~(!X : ( there_is_a_wineGlass & drink_container(X) ) => ( there_is_a_knife | wineGlass(X))). 
+penalty(709, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & food_utensil(X) ) => ( there_is_a_knife)). 
+penalty(710, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( there_is_a_knife | spoon(Y))). 
+penalty(711, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( there_is_a_knife | bowl(X))). 
+penalty(712, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( there_is_a_knife | food_utensil(Y))). 
+penalty(713, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & food_container(Y) ) => ( there_is_a_knife)). 
+penalty(714, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( there_is_a_knife | food_container(X))). 
+penalty(715, 1) <- ~(!X, Y : ( there_is_a_teaCup & above_of(X,Y) ) => ( there_is_a_knife | spoon(X))). 
+penalty(716, 1) <- ~(!X : ( there_is_a_teaCup & food_utensil(X) ) => ( there_is_a_knife | spoon(X))). 
+penalty(717, 1) <- ~(!X : ( there_is_a_teaCup & food_container(X) ) => ( there_is_a_knife | bowl(X))). 
+penalty(718, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & breakfast ) => ( there_is_a_knife)). 
+penalty(719, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & spoon(Y) ) => ( there_is_a_knife)). 
+penalty(720, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_knife | spoon(X))). 
+penalty(721, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_knife | pastaPlate(Y))). 
+penalty(722, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & food_utensil(Y) ) => ( there_is_a_knife)). 
+penalty(723, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_knife | food_container(Y))). 
+penalty(724, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( there_is_a_knife | spoon(Y))). 
+penalty(725, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( there_is_a_knife | bowl(X))). 
+penalty(726, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( there_is_a_knife | food_utensil(Y))). 
+penalty(727, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast & food_container(Y) ) => ( there_is_a_knife)). 
+penalty(728, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( there_is_a_knife | food_container(X))). 
+penalty(729, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_knife | pastaPlate(X))). 
+penalty(730, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( there_is_a_knife | bowl(X))). 
+penalty(731, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( there_is_a_knife | food_container(X))). 
+penalty(732, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | spoon(X) | food_utensil(Y))). 
+penalty(733, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_knife | spoon(X))). 
+penalty(734, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | spoon(X) | food_container(X))). 
+penalty(735, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | pastaPlate(Y) | food_utensil(Y))). 
+penalty(736, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_knife | pastaPlate(Y))). 
+penalty(737, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | pastaPlate(Y) | food_container(X))). 
+penalty(738, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(Y) ) => ( there_is_a_knife | food_container(X))). 
+penalty(739, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | food_utensil(X) | food_utensil(Y))). 
+penalty(740, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | food_utensil(X) | food_container(X))). 
+penalty(741, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | food_utensil(Y) | food_container(Y))). 
+penalty(742, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_knife | food_container(X) | food_container(Y))). 
+penalty(743, 1) <- ~(!X, Y : ( above_of(X,Y) & breakfast ) => ( there_is_a_knife | spoon(X))). 
+penalty(744, 1) <- ~(!X, Y : ( above_of(X,Y) & lunch ) => ( there_is_a_knife | waterGlass(Y))). 
+penalty(745, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_knife | fork(X) | spoon(X))). 
+penalty(746, 1) <- ~(!X, Y : ( above_of(X,Y) & wineGlass(Y) ) => ( there_is_a_knife | fork(X))). 
+penalty(747, 1) <- ~(!X, Y : ( above_of(X,Y) & teaCup(Y) ) => ( there_is_a_knife | spoon(X))). 
+penalty(748, 1) <- ~(!X : ( food_utensil(X) & breakfast ) => ( there_is_a_knife | spoon(X))). 
+penalty(749, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_knife | fork(X) | spoon(X))). 
+penalty(750, 1) <- ~(!X : ( food_container(X) & breakfast ) => ( there_is_a_knife | bowl(X))). 
+penalty(751, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_knife | bowl(X) | pastaPlate(X))). 
+penalty(752, 1) <- ~(!X : ( drink_container(X) & lunch ) => ( there_is_a_knife | waterGlass(X))). 
+penalty(753, 1) <- ~(( there_is_a_spoon & there_is_a_plate & there_is_a_wineGlass ) => ( there_is_a_waterGlass)). 
+penalty(754, 1) <- ~(( there_is_a_spoon & there_is_a_plate ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(755, 1) <- ~(( there_is_a_spoon & there_is_a_plate ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(756, 1) <- ~(( there_is_a_spoon & there_is_a_plate ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(757, 1) <- ~(( there_is_a_spoon & there_is_a_plate & lunch ) => ( there_is_a_wineGlass)). 
+penalty(758, 1) <- ~(!X, Y : ( there_is_a_spoon & there_is_a_plate & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(759, 1) <- ~(( there_is_a_spoon & there_is_a_waterGlass ) => ( there_is_a_bowl | lunch)). 
+penalty(760, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_bowl | there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(761, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_bowl | there_is_a_waterGlass | dinner)). 
+penalty(762, 1) <- ~(( there_is_a_spoon & there_is_a_wineGlass & lunch ) => ( there_is_a_bowl)). 
+penalty(763, 1) <- ~(( there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_bowl | dinner)). 
+penalty(764, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_bowl | there_is_a_wineGlass | lunch)). 
+penalty(765, 1) <- ~(!X, Y : ( there_is_a_spoon & above_of(X,Y) ) => ( there_is_a_bowl | fork(X))). 
+penalty(766, 1) <- ~(!X : ( there_is_a_spoon & food_container(X) ) => ( there_is_a_bowl | pastaPlate(X))). 
+penalty(767, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_bowl | lunch | dinner)). 
+penalty(768, 1) <- ~(( there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_pastaPlate | there_is_a_waterGlass)). 
+penalty(769, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_pastaPlate | there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(770, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_pastaPlate | there_is_a_waterGlass | breakfast)). 
+penalty(771, 1) <- ~(!X, Y : ( there_is_a_spoon & left_of(X,Y) & fork(Y) ) => ( there_is_a_pastaPlate)). 
+penalty(772, 1) <- ~(( there_is_a_spoon & there_is_a_wineGlass ) => ( there_is_a_waterGlass | dinner)). 
+penalty(773, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_waterGlass | there_is_a_teaCup | dinner)). 
+penalty(774, 1) <- ~(( there_is_a_spoon ) => ( there_is_a_waterGlass | breakfast | dinner)). 
+penalty(775, 1) <- ~(!X, Y : ( there_is_a_spoon & left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( false)). 
+penalty(776, 1) <- ~(!X, Y : ( there_is_a_spoon & left_of(X,Y) & fork(Y) ) => ( pastaPlate(X))). 
+penalty(777, 1) <- ~(!X, Y : ( there_is_a_spoon & left_of(X,Y) & knife(Y) ) => ( food_container(X))). 
+penalty(778, 1) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & fork(Y) ) => ( there_is_a_spoon)). 
+penalty(779, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( there_is_a_spoon | waterGlass(Y))). 
+penalty(780, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( there_is_a_spoon | waterGlass(X))). 
+penalty(781, 1) <- ~(( there_is_a_spoon | there_is_a_waterGlass | there_is_a_teaCup | lunch)). 
+penalty(782, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_spoon | wineGlass(Y))). 
+penalty(783, 1) <- ~(!X : ( there_is_a_wineGlass & drink_container(X) ) => ( there_is_a_spoon | wineGlass(X))). 
+penalty(784, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_spoon | there_is_a_wineGlass)). 
+penalty(785, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_spoon | fork(X))). 
+penalty(786, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_spoon | lunch)). 
+penalty(787, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_spoon | plate(X))). 
+penalty(788, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_spoon | fork(X) | plate(X))). 
+penalty(789, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_spoon | fork(X) | food_utensil(Y))). 
+penalty(790, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_spoon | fork(X))). 
+penalty(791, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_spoon | fork(X) | food_container(X))). 
+penalty(792, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_spoon | plate(X) | food_utensil(X))). 
+penalty(793, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_spoon | plate(Y) | food_utensil(Y))). 
+penalty(794, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_spoon | food_utensil(X) | food_utensil(Y))). 
+penalty(795, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_spoon | food_utensil(X) | food_container(X))). 
+penalty(796, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_spoon | food_utensil(Y) | food_container(Y))). 
+penalty(797, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_spoon | fork(X) | knife(X))). 
+penalty(798, 1) <- ~(( there_is_a_plate & there_is_a_bowl ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(799, 1) <- ~(( there_is_a_plate & there_is_a_bowl & lunch ) => ( there_is_a_wineGlass)). 
+penalty(800, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) ) => ( there_is_a_bowl | knife(X))). 
+penalty(801, 1) <- ~(!X : ( there_is_a_plate & food_container(X) ) => ( there_is_a_bowl | plate(X))). 
+penalty(802, 1) <- ~(!X, Y : ( there_is_a_plate & there_is_a_waterGlass & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(803, 1) <- ~(( there_is_a_plate ) => ( there_is_a_waterGlass | there_is_a_teaCup | lunch)). 
+penalty(804, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) ) => ( there_is_a_waterGlass | knife(X))). 
+penalty(805, 1) <- ~(!X, Y : ( there_is_a_plate & left_of(X,Y) & fork(Y) ) => ( there_is_a_wineGlass)). 
+penalty(806, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) ) => ( there_is_a_wineGlass | knife(X))). 
+penalty(807, 1) <- ~(!X, Y : ( there_is_a_plate & there_is_a_teaCup & above_of(X,Y) ) => ( knife(X))). 
+penalty(808, 1) <- ~(!X, Y : ( there_is_a_plate & left_of(X,Y) & food_container(X) & spoon(Y) ) => ( false)). 
+penalty(809, 1) <- ~(!X, Y : ( there_is_a_plate & left_of(X,Y) & fork(Y) ) => ( lunch)). 
+penalty(810, 1) <- ~(!X, Y : ( there_is_a_plate & left_of(X,Y) & fork(Y) ) => ( plate(X))). 
+penalty(811, 1) <- ~(!X, Y : ( there_is_a_plate & left_of(X,Y) & food_container(Y) ) => ( fork(X))). 
+penalty(812, 1) <- ~(!X, Y : ( there_is_a_plate & left_of(X,Y) & spoon(Y) ) => ( knife(X))). 
+penalty(813, 1) <- ~(!X, Y : ( there_is_a_plate & left_of(X,Y) & spoon(Y) ) => ( food_utensil(X))). 
+penalty(814, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) & breakfast ) => ( knife(X))). 
+penalty(815, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) ) => ( lunch | knife(X))). 
+penalty(816, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) ) => ( knife(X) | spoon(X))). 
+penalty(817, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) & waterGlass(Y) ) => ( knife(X))). 
+penalty(818, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) ) => ( knife(X) | wineGlass(Y))). 
+penalty(819, 1) <- ~(!X, Y : ( there_is_a_plate & above_of(X,Y) & teaCup(Y) ) => ( knife(X))). 
+penalty(820, 1) <- ~(!X : ( there_is_a_plate & food_container(X) ) => ( plate(X) | bowl(X))). 
+penalty(821, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) & food_utensil(X) ) => ( there_is_a_plate)). 
+penalty(822, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) ) => ( there_is_a_plate | spoon(Y))). 
+penalty(823, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) ) => ( there_is_a_plate | bowl(X))). 
+penalty(824, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) ) => ( there_is_a_plate | food_utensil(Y))). 
+penalty(825, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) & food_container(Y) ) => ( there_is_a_plate)). 
+penalty(826, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) ) => ( there_is_a_plate | food_container(X))). 
+penalty(827, 1) <- ~(!X, Y : ( there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_plate | spoon(X))). 
+penalty(828, 1) <- ~(!X : ( there_is_a_bowl & food_utensil(X) ) => ( there_is_a_plate | spoon(X))). 
+penalty(829, 1) <- ~(!X : ( there_is_a_bowl & food_container(X) ) => ( there_is_a_plate | bowl(X))). 
+penalty(830, 1) <- ~(( there_is_a_waterGlass ) => ( there_is_a_plate | there_is_a_bowl | lunch)). 
+penalty(831, 1) <- ~(( there_is_a_plate | there_is_a_bowl | there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(832, 1) <- ~(( there_is_a_plate | there_is_a_bowl | there_is_a_waterGlass | dinner)). 
+penalty(833, 1) <- ~(( there_is_a_plate | there_is_a_bowl | there_is_a_wineGlass | lunch)). 
+penalty(834, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_plate | there_is_a_bowl | fork(X))). 
+penalty(835, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_plate | there_is_a_bowl | pastaPlate(X))). 
+penalty(836, 1) <- ~(( there_is_a_plate | there_is_a_bowl | lunch | dinner)). 
+penalty(837, 1) <- ~(( there_is_a_plate | there_is_a_pastaPlate | there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(838, 1) <- ~(( there_is_a_plate | there_is_a_pastaPlate | there_is_a_waterGlass | breakfast)). 
+penalty(839, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_plate | there_is_a_pastaPlate)). 
+penalty(840, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | there_is_a_pastaPlate | spoon(Y))). 
+penalty(841, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | there_is_a_pastaPlate | bowl(X))). 
+penalty(842, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | there_is_a_pastaPlate | food_utensil(Y))). 
+penalty(843, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_plate | there_is_a_pastaPlate)). 
+penalty(844, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | there_is_a_pastaPlate | food_container(X))). 
+penalty(845, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_plate | there_is_a_pastaPlate | spoon(X))). 
+penalty(846, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_plate | there_is_a_pastaPlate | spoon(X))). 
+penalty(847, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_plate | there_is_a_pastaPlate | bowl(X))). 
+penalty(848, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( there_is_a_plate | waterGlass(Y))). 
+penalty(849, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( there_is_a_plate | waterGlass(X))). 
+penalty(850, 1) <- ~(( there_is_a_plate | there_is_a_waterGlass | there_is_a_teaCup | dinner)). 
+penalty(851, 1) <- ~(( there_is_a_plate | there_is_a_waterGlass | breakfast | dinner)). 
+penalty(852, 1) <- ~(!X, Y : ( there_is_a_wineGlass & left_of(X,Y) & spoon(Y) ) => ( there_is_a_plate)). 
+penalty(853, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_plate | fork(X))). 
+penalty(854, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_plate | wineGlass(Y))). 
+penalty(855, 1) <- ~(!X : ( there_is_a_wineGlass & food_container(X) ) => ( there_is_a_plate | pastaPlate(X))). 
+penalty(856, 1) <- ~(!X : ( there_is_a_wineGlass & drink_container(X) ) => ( there_is_a_plate | wineGlass(X))). 
+penalty(857, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & food_utensil(X) ) => ( there_is_a_plate)). 
+penalty(858, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( there_is_a_plate | spoon(Y))). 
+penalty(859, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( there_is_a_plate | bowl(X))). 
+penalty(860, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( there_is_a_plate | food_utensil(Y))). 
+penalty(861, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & food_container(Y) ) => ( there_is_a_plate)). 
+penalty(862, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( there_is_a_plate | food_container(X))). 
+penalty(863, 1) <- ~(!X, Y : ( there_is_a_teaCup & above_of(X,Y) ) => ( there_is_a_plate | spoon(X))). 
+penalty(864, 1) <- ~(!X : ( there_is_a_teaCup & food_utensil(X) ) => ( there_is_a_plate | spoon(X))). 
+penalty(865, 1) <- ~(!X : ( there_is_a_teaCup & food_container(X) ) => ( there_is_a_plate | bowl(X))). 
+penalty(866, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & breakfast ) => ( there_is_a_plate)). 
+penalty(867, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & spoon(Y) ) => ( there_is_a_plate)). 
+penalty(868, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_plate | spoon(X))). 
+penalty(869, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_plate | pastaPlate(Y))). 
+penalty(870, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & food_utensil(Y) ) => ( there_is_a_plate)). 
+penalty(871, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_plate | food_container(Y))). 
+penalty(872, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( there_is_a_plate | spoon(Y))). 
+penalty(873, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( there_is_a_plate | bowl(X))). 
+penalty(874, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( there_is_a_plate | food_utensil(Y))). 
+penalty(875, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast & food_container(Y) ) => ( there_is_a_plate)). 
+penalty(876, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( there_is_a_plate | food_container(X))). 
+penalty(877, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_plate | pastaPlate(X))). 
+penalty(878, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( there_is_a_plate | bowl(X))). 
+penalty(879, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( there_is_a_plate | food_container(X))). 
+penalty(880, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | spoon(X) | food_utensil(Y))). 
+penalty(881, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_plate | spoon(X))). 
+penalty(882, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | spoon(X) | food_container(X))). 
+penalty(883, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | pastaPlate(Y) | food_utensil(Y))). 
+penalty(884, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_plate | pastaPlate(Y))). 
+penalty(885, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | pastaPlate(Y) | food_container(X))). 
+penalty(886, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(Y) ) => ( there_is_a_plate | food_container(X))). 
+penalty(887, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | food_utensil(X) | food_utensil(Y))). 
+penalty(888, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | food_utensil(X) | food_container(X))). 
+penalty(889, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | food_utensil(Y) | food_container(Y))). 
+penalty(890, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_plate | food_container(X) | food_container(Y))). 
+penalty(891, 1) <- ~(!X, Y : ( above_of(X,Y) & breakfast ) => ( there_is_a_plate | spoon(X))). 
+penalty(892, 1) <- ~(!X, Y : ( above_of(X,Y) & lunch ) => ( there_is_a_plate | waterGlass(Y))). 
+penalty(893, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_plate | fork(X) | spoon(X))). 
+penalty(894, 1) <- ~(!X, Y : ( above_of(X,Y) & wineGlass(Y) ) => ( there_is_a_plate | fork(X))). 
+penalty(895, 1) <- ~(!X, Y : ( above_of(X,Y) & teaCup(Y) ) => ( there_is_a_plate | spoon(X))). 
+penalty(896, 1) <- ~(!X : ( food_utensil(X) & breakfast ) => ( there_is_a_plate | spoon(X))). 
+penalty(897, 1) <- ~(!X : ( food_utensil(X) ) => ( there_is_a_plate | fork(X) | spoon(X))). 
+penalty(898, 1) <- ~(!X : ( food_container(X) & breakfast ) => ( there_is_a_plate | bowl(X))). 
+penalty(899, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_plate | bowl(X) | pastaPlate(X))). 
+penalty(900, 1) <- ~(!X : ( drink_container(X) & lunch ) => ( there_is_a_plate | waterGlass(X))). 
+penalty(901, 1) <- ~(!X, Y : ( there_is_a_bowl & above_of(X,Y) ) => ( there_is_a_waterGlass | teaCup(Y))). 
+penalty(902, 1) <- ~(!X : ( there_is_a_bowl & drink_container(X) ) => ( there_is_a_waterGlass | teaCup(X))). 
+penalty(903, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( false)). 
+penalty(904, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) & food_container(Y) ) => ( fork(X))). 
+penalty(905, 1) <- ~(!X, Y : ( there_is_a_bowl & left_of(X,Y) & knife(Y) ) => ( food_container(X))). 
+penalty(906, 1) <- ~(!X, Y : ( there_is_a_bowl & above_of(X,Y) ) => ( knife(X) | spoon(X))). 
+penalty(907, 1) <- ~(!X, Y : ( there_is_a_bowl & above_of(X,Y) & wineGlass(Y) ) => ( spoon(X))). 
+penalty(908, 1) <- ~(!X : ( there_is_a_bowl & food_container(X) ) => ( plate(X) | bowl(X))). 
+penalty(909, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_bowl | there_is_a_pastaPlate | knife(X))). 
+penalty(910, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_bowl | there_is_a_pastaPlate | plate(X))). 
+penalty(911, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( there_is_a_bowl | waterGlass(Y))). 
+penalty(912, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( there_is_a_bowl | waterGlass(X))). 
+penalty(913, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_bowl | wineGlass(Y))). 
+penalty(914, 1) <- ~(!X : ( there_is_a_wineGlass & drink_container(X) ) => ( there_is_a_bowl | wineGlass(X))). 
+penalty(915, 1) <- ~(!X, Y : ( there_is_a_teaCup & above_of(X,Y) ) => ( there_is_a_bowl | knife(X))). 
+penalty(916, 1) <- ~(!X : ( there_is_a_teaCup & food_container(X) ) => ( there_is_a_bowl | plate(X))). 
+penalty(917, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_bowl | food_utensil(X) | food_utensil(Y))). 
+penalty(918, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_bowl | food_utensil(X) | food_container(X))). 
+penalty(919, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_bowl | food_utensil(Y) | food_container(Y))). 
+penalty(920, 1) <- ~(!X, Y : ( above_of(X,Y) & breakfast ) => ( there_is_a_bowl | knife(X))). 
+penalty(921, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_bowl | fork(X) | knife(X))). 
+penalty(922, 1) <- ~(!X, Y : ( above_of(X,Y) & teaCup(Y) ) => ( there_is_a_bowl | knife(X))). 
+penalty(923, 1) <- ~(!X : ( food_container(X) & breakfast ) => ( there_is_a_bowl | plate(X))). 
+penalty(924, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_bowl | plate(X) | pastaPlate(X))). 
+penalty(925, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & there_is_a_waterGlass & above_of(X,Y) ) => ( waterGlass(Y))). 
+penalty(926, 1) <- ~(!X : ( there_is_a_pastaPlate & there_is_a_waterGlass & drink_container(X) ) => ( waterGlass(X))). 
+penalty(927, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & above_of(X,Y) ) => ( there_is_a_waterGlass | wineGlass(Y))). 
+penalty(928, 1) <- ~(!X : ( there_is_a_pastaPlate & drink_container(X) ) => ( there_is_a_waterGlass | wineGlass(X))). 
+penalty(929, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & there_is_a_wineGlass & above_of(X,Y) ) => ( wineGlass(Y))). 
+penalty(930, 1) <- ~(!X : ( there_is_a_pastaPlate & there_is_a_wineGlass & drink_container(X) ) => ( wineGlass(X))). 
+penalty(931, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & above_of(X,Y) ) => ( there_is_a_wineGlass | waterGlass(Y))). 
+penalty(932, 1) <- ~(!X : ( there_is_a_pastaPlate & drink_container(X) ) => ( there_is_a_wineGlass | waterGlass(X))). 
+penalty(933, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_utensil(X) ) => ( spoon(X))). 
+penalty(934, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_utensil(X) ) => ( pastaPlate(Y))). 
+penalty(935, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_utensil(X) & food_utensil(Y) ) => ( false)). 
+penalty(936, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_utensil(X) ) => ( food_container(Y))). 
+penalty(937, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_container(X) ) => ( fork(Y))). 
+penalty(938, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & fork(Y) ) => ( pastaPlate(X))). 
+penalty(939, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( fork(Y) | spoon(X))). 
+penalty(940, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( fork(Y) | pastaPlate(Y))). 
+penalty(941, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_utensil(Y) ) => ( fork(Y))). 
+penalty(942, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( fork(Y) | food_utensil(X))). 
+penalty(943, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( fork(Y) | food_container(Y))). 
+penalty(944, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( spoon(X) | pastaPlate(X))). 
+penalty(945, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( spoon(X) | food_utensil(Y))). 
+penalty(946, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_container(Y) ) => ( spoon(X))). 
+penalty(947, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( spoon(X) | food_container(X))). 
+penalty(948, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( pastaPlate(X) | pastaPlate(Y))). 
+penalty(949, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_utensil(Y) ) => ( pastaPlate(X))). 
+penalty(950, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( pastaPlate(X) | food_utensil(X))). 
+penalty(951, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( pastaPlate(X) | food_container(Y))). 
+penalty(952, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( pastaPlate(Y) | food_utensil(Y))). 
+penalty(953, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( pastaPlate(Y) | food_container(X))). 
+penalty(954, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) & food_utensil(Y) ) => ( food_container(X))). 
+penalty(955, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( food_utensil(X) | food_utensil(Y))). 
+penalty(956, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( food_utensil(X) | food_container(X))). 
+penalty(957, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( food_utensil(Y) | food_container(Y))). 
+penalty(958, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & left_of(X,Y) ) => ( food_container(X) | food_container(Y))). 
+penalty(959, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & above_of(X,Y) & lunch ) => ( waterGlass(Y))). 
+penalty(960, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & above_of(X,Y) ) => ( lunch | wineGlass(Y))). 
+penalty(961, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & above_of(X,Y) ) => ( dinner | waterGlass(Y))). 
+penalty(962, 1) <- ~(!X, Y : ( there_is_a_pastaPlate & above_of(X,Y) ) => ( waterGlass(Y) | wineGlass(Y))). 
+penalty(963, 1) <- ~(!X : ( there_is_a_pastaPlate & food_utensil(X) ) => ( fork(X) | spoon(X))). 
+penalty(964, 1) <- ~(!X : ( there_is_a_pastaPlate & drink_container(X) & lunch ) => ( waterGlass(X))). 
+penalty(965, 1) <- ~(!X : ( there_is_a_pastaPlate & drink_container(X) ) => ( lunch | wineGlass(X))). 
+penalty(966, 1) <- ~(!X : ( there_is_a_pastaPlate & drink_container(X) ) => ( dinner | waterGlass(X))). 
+penalty(967, 1) <- ~(!X : ( there_is_a_pastaPlate & drink_container(X) ) => ( waterGlass(X) | wineGlass(X))). 
+penalty(968, 1) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & fork(Y) ) => ( there_is_a_pastaPlate)). 
+penalty(969, 1) <- ~(( there_is_a_pastaPlate | there_is_a_waterGlass | there_is_a_teaCup | lunch)). 
+penalty(970, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_pastaPlate | there_is_a_wineGlass)). 
+penalty(971, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_pastaPlate | lunch)). 
+penalty(972, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_pastaPlate | plate(X))). 
+penalty(973, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( there_is_a_pastaPlate | fork(X))). 
+penalty(974, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_pastaPlate | knife(X) | spoon(X))). 
+penalty(975, 1) <- ~(!X : ( food_container(X) ) => ( there_is_a_pastaPlate | plate(X) | bowl(X))). 
+penalty(976, 1) <- ~(!X, Y : ( there_is_a_waterGlass & there_is_a_wineGlass & left_of(X,Y) & fork(Y) ) => ( false)). 
+penalty(977, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( there_is_a_wineGlass | waterGlass(Y))). 
+penalty(978, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( there_is_a_wineGlass | waterGlass(X))). 
+penalty(979, 1) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( false)). 
+penalty(980, 1) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & fork(Y) ) => ( lunch)). 
+penalty(981, 1) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & fork(Y) ) => ( pastaPlate(X))). 
+penalty(982, 1) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & knife(Y) ) => ( food_container(X))). 
+penalty(983, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) & breakfast ) => ( waterGlass(Y))). 
+penalty(984, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( lunch | waterGlass(Y))). 
+penalty(985, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( spoon(X) | waterGlass(Y))). 
+penalty(986, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) & wineGlass(Y) ) => ( spoon(X))). 
+penalty(987, 1) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( waterGlass(Y) | wineGlass(Y))). 
+penalty(988, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) & breakfast ) => ( waterGlass(X))). 
+penalty(989, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( lunch | waterGlass(X))). 
+penalty(990, 1) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( waterGlass(X) | wineGlass(X))). 
+penalty(991, 1) <- ~(!X, Y : ( there_is_a_wineGlass & left_of(X,Y) & spoon(Y) ) => ( there_is_a_waterGlass)). 
+penalty(992, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( there_is_a_waterGlass | wineGlass(Y))). 
+penalty(993, 1) <- ~(!X : ( there_is_a_wineGlass & drink_container(X) ) => ( there_is_a_waterGlass | wineGlass(X))). 
+penalty(994, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_waterGlass | there_is_a_wineGlass)). 
+penalty(995, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_waterGlass | there_is_a_wineGlass | teaCup(Y))). 
+penalty(996, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_waterGlass | there_is_a_wineGlass | teaCup(X))). 
+penalty(997, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( there_is_a_waterGlass | there_is_a_teaCup)). 
+penalty(998, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_waterGlass | there_is_a_teaCup | wineGlass(Y))). 
+penalty(999, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_waterGlass | there_is_a_teaCup | wineGlass(X))). 
+penalty(1000, 1) <- ~(( there_is_a_waterGlass | there_is_a_teaCup | lunch | dinner)). 
+penalty(1001, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( there_is_a_waterGlass | breakfast)). 
+penalty(1002, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_waterGlass | food_utensil(X) | food_utensil(Y))). 
+penalty(1003, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_waterGlass | food_utensil(X) | food_container(X))). 
+penalty(1004, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_waterGlass | food_utensil(Y) | food_container(Y))). 
+penalty(1005, 1) <- ~(!X, Y : ( above_of(X,Y) & breakfast ) => ( there_is_a_waterGlass | teaCup(Y))). 
+penalty(1006, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_waterGlass | breakfast | wineGlass(Y))). 
+penalty(1007, 1) <- ~(!X, Y : ( above_of(X,Y) & lunch ) => ( there_is_a_waterGlass | knife(X))). 
+penalty(1008, 1) <- ~(!X, Y : ( above_of(X,Y) & lunch ) => ( there_is_a_waterGlass | wineGlass(Y))). 
+penalty(1009, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_waterGlass | wineGlass(Y) | teaCup(Y))). 
+penalty(1010, 1) <- ~(!X : ( food_container(X) & lunch ) => ( there_is_a_waterGlass | plate(X))). 
+penalty(1011, 1) <- ~(!X : ( drink_container(X) & breakfast ) => ( there_is_a_waterGlass | teaCup(X))). 
+penalty(1012, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_waterGlass | breakfast | wineGlass(X))). 
+penalty(1013, 1) <- ~(!X : ( drink_container(X) & lunch ) => ( there_is_a_waterGlass | wineGlass(X))). 
+penalty(1014, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_waterGlass | wineGlass(X) | teaCup(X))). 
+penalty(1015, 1) <- ~(!X, Y : ( there_is_a_wineGlass & left_of(X,Y) & food_container(X) & spoon(Y) ) => ( false)). 
+penalty(1016, 1) <- ~(!X, Y : ( there_is_a_wineGlass & left_of(X,Y) & spoon(Y) ) => ( lunch)). 
+penalty(1017, 1) <- ~(!X, Y : ( there_is_a_wineGlass & left_of(X,Y) & spoon(Y) ) => ( knife(X))). 
+penalty(1018, 1) <- ~(!X, Y : ( there_is_a_wineGlass & left_of(X,Y) & spoon(Y) ) => ( food_utensil(X))). 
+penalty(1019, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( lunch | fork(X))). 
+penalty(1020, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( lunch | wineGlass(Y))). 
+penalty(1021, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) & waterGlass(Y) ) => ( knife(X))). 
+penalty(1022, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( knife(X) | wineGlass(Y))). 
+penalty(1023, 1) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( waterGlass(Y) | wineGlass(Y))). 
+penalty(1024, 1) <- ~(!X : ( there_is_a_wineGlass & food_container(X) ) => ( lunch | pastaPlate(X))). 
+penalty(1025, 1) <- ~(!X : ( there_is_a_wineGlass & drink_container(X) ) => ( lunch | wineGlass(X))). 
+penalty(1026, 1) <- ~(!X : ( there_is_a_wineGlass & drink_container(X) ) => ( waterGlass(X) | wineGlass(X))). 
+penalty(1027, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_wineGlass | there_is_a_teaCup | waterGlass(Y))). 
+penalty(1028, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_wineGlass | there_is_a_teaCup | waterGlass(X))). 
+penalty(1029, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( there_is_a_wineGlass)). 
+penalty(1030, 1) <- ~(!X, Y : ( left_of(X,Y) & bowl(Y) ) => ( there_is_a_wineGlass | breakfast)). 
+penalty(1031, 1) <- ~(!X, Y : ( left_of(X,Y) & lunch & bowl(Y) ) => ( there_is_a_wineGlass)). 
+penalty(1032, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_wineGlass | lunch)). 
+penalty(1033, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_wineGlass | pastaPlate(X))). 
+penalty(1034, 1) <- ~(!X, Y : ( left_of(X,Y) & knife(Y) ) => ( there_is_a_wineGlass | food_container(X))). 
+penalty(1035, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | food_utensil(X) | food_utensil(Y))). 
+penalty(1036, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | food_utensil(X) | food_container(X))). 
+penalty(1037, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | food_utensil(Y) | food_container(Y))). 
+penalty(1038, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_wineGlass | breakfast | waterGlass(Y))). 
+penalty(1039, 1) <- ~(!X, Y : ( above_of(X,Y) & lunch ) => ( there_is_a_wineGlass | waterGlass(Y))). 
+penalty(1040, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_wineGlass | waterGlass(Y) | teaCup(Y))). 
+penalty(1041, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_wineGlass | breakfast | waterGlass(X))). 
+penalty(1042, 1) <- ~(!X : ( drink_container(X) & lunch ) => ( there_is_a_wineGlass | waterGlass(X))). 
+penalty(1043, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_wineGlass | waterGlass(X) | teaCup(X))). 
+penalty(1044, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( false)). 
+penalty(1045, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( fork(X) | food_utensil(Y))). 
+penalty(1046, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & food_container(Y) ) => ( fork(X))). 
+penalty(1047, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) & knife(Y) ) => ( food_container(X))). 
+penalty(1048, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( food_utensil(X) | food_utensil(Y))). 
+penalty(1049, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( food_utensil(X) | food_container(X))). 
+penalty(1050, 1) <- ~(!X, Y : ( there_is_a_teaCup & left_of(X,Y) ) => ( food_utensil(Y) | food_container(Y))). 
+penalty(1051, 1) <- ~(!X, Y : ( there_is_a_teaCup & above_of(X,Y) ) => ( knife(X) | spoon(X))). 
+penalty(1052, 1) <- ~(!X : ( there_is_a_teaCup & food_container(X) ) => ( plate(X) | bowl(X))). 
+penalty(1053, 1) <- ~(!X, Y : ( above_of(X,Y) & breakfast ) => ( there_is_a_teaCup | waterGlass(Y))). 
+penalty(1054, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_teaCup | waterGlass(Y) | wineGlass(Y))). 
+penalty(1055, 1) <- ~(!X : ( drink_container(X) & breakfast ) => ( there_is_a_teaCup | waterGlass(X))). 
+penalty(1056, 1) <- ~(!X : ( drink_container(X) ) => ( there_is_a_teaCup | waterGlass(X) | wineGlass(X))). 
+penalty(1057, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & breakfast & knife(Y) ) => ( false)). 
+penalty(1058, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( lunch)). 
+penalty(1059, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & dinner ) => ( spoon(X))). 
+penalty(1060, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & dinner ) => ( pastaPlate(Y))). 
+penalty(1061, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & dinner & food_utensil(Y) ) => ( false)). 
+penalty(1062, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & dinner ) => ( food_container(Y))). 
+penalty(1063, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( fork(X))). 
+penalty(1064, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & spoon(Y) ) => ( knife(X))). 
+penalty(1065, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( food_utensil(Y) | food_container(Y))). 
+penalty(1066, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & dinner ) => ( fork(Y))). 
+penalty(1067, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & spoon(Y) ) => ( bowl(X))). 
+penalty(1068, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( fork(X) | food_utensil(Y))). 
+penalty(1069, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast & food_container(Y) ) => ( fork(X))). 
+penalty(1070, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast & knife(Y) ) => ( food_container(X))). 
+penalty(1071, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( food_utensil(X) | food_utensil(Y))). 
+penalty(1072, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( food_utensil(X) | food_container(X))). 
+penalty(1073, 1) <- ~(!X, Y : ( left_of(X,Y) & breakfast ) => ( food_utensil(Y) | food_container(Y))). 
+penalty(1074, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( breakfast | lunch)). 
+penalty(1075, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( lunch | dinner)). 
+penalty(1076, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( lunch | pastaPlate(X))). 
+penalty(1077, 1) <- ~(!X, Y : ( left_of(X,Y) & knife(Y) ) => ( lunch | food_container(X))). 
+penalty(1078, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( lunch | food_utensil(X) | food_utensil(Y))). 
+penalty(1079, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( lunch | food_utensil(X) | food_container(X))). 
+penalty(1080, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( lunch | food_utensil(Y) | food_container(Y))). 
+penalty(1081, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner & fork(Y) ) => ( pastaPlate(X))). 
+penalty(1082, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( fork(Y) | spoon(X))). 
+penalty(1083, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( fork(Y) | pastaPlate(Y))). 
+penalty(1084, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner & food_utensil(Y) ) => ( fork(Y))). 
+penalty(1085, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( fork(Y) | food_utensil(X))). 
+penalty(1086, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( fork(Y) | food_container(Y))). 
+penalty(1087, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( spoon(X) | pastaPlate(X))). 
+penalty(1088, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( spoon(X) | food_utensil(Y))). 
+penalty(1089, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner & food_container(Y) ) => ( spoon(X))). 
+penalty(1090, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( spoon(X) | food_container(X))). 
+penalty(1091, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( pastaPlate(X) | pastaPlate(Y))). 
+penalty(1092, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner & food_utensil(Y) ) => ( pastaPlate(X))). 
+penalty(1093, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( pastaPlate(X) | food_utensil(X))). 
+penalty(1094, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( pastaPlate(X) | food_container(Y))). 
+penalty(1095, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( pastaPlate(Y) | food_utensil(Y))). 
+penalty(1096, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( pastaPlate(Y) | food_container(X))). 
+penalty(1097, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner & food_utensil(Y) ) => ( food_container(X))). 
+penalty(1098, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( food_utensil(X) | food_utensil(Y))). 
+penalty(1099, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( food_utensil(X) | food_container(X))). 
+penalty(1100, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( food_utensil(Y) | food_container(Y))). 
+penalty(1101, 1) <- ~(!X, Y : ( left_of(X,Y) & dinner ) => ( food_container(X) | food_container(Y))). 
+penalty(1102, 1) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( plate(X) | pastaPlate(X))). 
+penalty(1103, 1) <- ~(!X, Y : ( left_of(X,Y) & knife(Y) ) => ( fork(X) | food_container(X))). 
+penalty(1104, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( fork(X) | spoon(X))). 
+penalty(1105, 1) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( fork(X) | pastaPlate(Y))). 
+penalty(1106, 1) <- ~(!X, Y : ( left_of(X,Y) & knife(Y) ) => ( food_utensil(X) | food_container(X))). 
+penalty(1107, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( knife(X) | bowl(X))). 
+penalty(1108, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( knife(X) | food_container(X))). 
+penalty(1109, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( bowl(X) | food_utensil(X))). 
+penalty(1110, 1) <- ~(!X, Y : ( left_of(X,Y) & spoon(Y) ) => ( food_utensil(X) | food_container(X))). 
+penalty(1111, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( waterGlass(X) | food_utensil(X) | food_utensil(Y))). 
+penalty(1112, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( waterGlass(X) | food_utensil(X) | food_container(X))). 
+penalty(1113, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( waterGlass(X) | food_utensil(Y) | food_container(Y))). 
+penalty(1114, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( wineGlass(Y) | food_utensil(X) | food_utensil(Y))). 
+penalty(1115, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( wineGlass(Y) | food_utensil(X) | food_container(X))). 
+penalty(1116, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( wineGlass(Y) | food_utensil(Y) | food_container(Y))). 
+penalty(1117, 1) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(Y) ) => ( food_utensil(X) | food_container(X))). 
+penalty(1118, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(X) | food_utensil(Y) | drink_container(X))). 
+penalty(1119, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(X) | food_utensil(Y) | drink_container(Y))). 
+penalty(1120, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(X) | food_container(X) | drink_container(X))). 
+penalty(1121, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(X) | food_container(X) | drink_container(Y))). 
+penalty(1122, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(Y) | food_container(Y) | drink_container(X))). 
+penalty(1123, 1) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(Y) | food_container(Y) | drink_container(Y))). 
+penalty(1124, 1) <- ~(!X, Y : ( above_of(X,Y) & breakfast ) => ( knife(X) | spoon(X))). 
+penalty(1125, 1) <- ~(!X, Y : ( above_of(X,Y) & breakfast ) => ( waterGlass(Y) | teaCup(Y))). 
+penalty(1126, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( breakfast | lunch | fork(X))). 
+penalty(1127, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( breakfast | lunch | wineGlass(Y))). 
+penalty(1128, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( breakfast | waterGlass(Y) | wineGlass(Y))). 
+penalty(1129, 1) <- ~(!X, Y : ( above_of(X,Y) & lunch ) => ( waterGlass(Y) | wineGlass(Y))). 
+penalty(1130, 1) <- ~(!X, Y : ( above_of(X,Y) & wineGlass(Y) ) => ( lunch | fork(X))). 
+penalty(1131, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( fork(X) | knife(X) | spoon(X))). 
+penalty(1132, 1) <- ~(!X, Y : ( above_of(X,Y) & teaCup(Y) ) => ( knife(X) | spoon(X))). 
+penalty(1133, 1) <- ~(!X, Y : ( above_of(X,Y) ) => ( waterGlass(Y) | wineGlass(Y) | teaCup(Y))). 
+penalty(1134, 1) <- ~(!X : ( food_utensil(X) & dinner ) => ( fork(X) | spoon(X))). 
+penalty(1135, 1) <- ~(!X : ( food_utensil(X) ) => ( fork(X) | knife(X) | spoon(X))). 
+penalty(1136, 1) <- ~(!X : ( food_container(X) & breakfast ) => ( plate(X) | bowl(X))). 
+penalty(1137, 1) <- ~(!X : ( food_container(X) ) => ( breakfast | lunch | pastaPlate(X))). 
+penalty(1138, 1) <- ~(!X : ( food_container(X) ) => ( plate(X) | bowl(X) | pastaPlate(X))). 
+penalty(1139, 1) <- ~(!X : ( drink_container(X) & breakfast ) => ( waterGlass(X) | teaCup(X))). 
+penalty(1140, 1) <- ~(!X : ( drink_container(X) ) => ( breakfast | lunch | wineGlass(X))). 
+penalty(1141, 1) <- ~(!X : ( drink_container(X) ) => ( breakfast | waterGlass(X) | wineGlass(X))). 
+penalty(1142, 1) <- ~(!X : ( drink_container(X) & lunch ) => ( waterGlass(X) | wineGlass(X))). 
+penalty(1143, 1) <- ~(!X : ( drink_container(X) ) => ( waterGlass(X) | wineGlass(X) | teaCup(X))). 
+
+}
+}
+
+
+
+structure S : V {
+	time = {breakfast}
+	breakfastTime = {breakfast}
+	lunchTime = {}
+	dinnerTime = {}
+
+
+	fork = {fork}
+	knife = {knife}
+	spoon = {}
+	plate = {plate}
+	bowl = {}
+	soupPlate = {}
+	teaCup = {}
+	waterGlass = {water}
+	wineGlass = {}
+
+	RuleNr = {0..1143}
+	Penalty = {0..5}
+
+	// above_of = {(f, water)}
+
+	PossCo = {0..3}
+	// Example 1 in claudien:
+	// position = {(0, 0, 0, fork); (1, 0, 0, plate); (2, 0, 0, knife); (2, 1, 0, water)}
+	
+	// Example 2 in claudien:
+	// position = {(0, 0, 0, fork); (1, 0, 0, plate); (2, 0, 0, knife); (2, 1, 0, wine)}
+
+	// Example 3 in claudien:
+	// position = {(0, 0, 0, plate); (1, 0, 0, fork); (2, 0, 0, knife); (2, 1, 0, wine)}
+
+	// Not an example but should work with penalty/penalty
+	position = {(0, 0, 0, plate); (1, 0, 0, fork); (2, 0, 0, knife); (2, 1, 0, water)}
+
+	// Breakfast 1: should generate model
+	// position = {(0, 0, 0, plate); (1, 0, 0, knife); (1, 1, 0, cup)}
+
+	// Breakfast 3
+	// position = {(0, 0, 0, fork); (1, 0, 0, plate); (2, 0, 0, knife); (2, 1, 0, cup); (3, 1, 0, water)}
+
+	// Breakfast: should give unsatisfiable. Because there is a waterGlass and teaCup... (is important rule, without penalty)
+	// position = {(0, 0, 0, plate); (0, 0, 1, bowl); (1, 0, 0, knife); (2, 1, 0, cup); (3, 0, 0, spoon); (3, 1, 0, water)}
+
+}
+
+procedure main() {
+	stdoptions.nrpropsteps=1
+	// stdoptions.longestbranch=1
+	stdoptions.liftedunitpropagation=false
+	stdoptions.cpsupport=true
+	stdoptions.verbosity.grounding=1
+	stdoptions.verbosity.solving=1
+	stdoptions.groundwithbounds=false
+	stdoptions.splitdefs=false
+
+	sol = minimize(T,S,penaltyTerm)[1]
+	print(sol[V::penalty].ct)
+
+    	// printmodels(modelexpand(T,S))
+	// printcore(T,S)
+}
+
+
+
+
+
+

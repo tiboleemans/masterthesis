@@ -1,0 +1,5 @@
+	spoon = {spoon}
+	bowl = {bowl}
+	waterGlass = {waterGlass}
+	teaCup = {teaCup}
+    	position<ct> = {(0, 0, 0, bowl); (1, 0, 0, spoon); (1, 1, 0, water)}

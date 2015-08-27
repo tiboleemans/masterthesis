@@ -1,0 +1,344 @@
+vocabulary  V {
+	type RuleNr isa int
+	type Cost isa int
+	type Object
+	type Time
+
+	type Fork isa Object 
+	type Knife isa Object
+	type Spoon isa Object
+	type SmallKnife isa Object
+	
+	type Plate isa Object
+	type Bowl isa Object
+	type PastaPlate isa Object
+	type SoupPlate isa Object
+	type Saucer isa Object
+
+	type WaterGlass isa Object 
+	type WineGlass isa Object
+	type TeaCup isa Object
+
+	type Breakfast isa Time
+	type Lunch isa Time
+	type Dinner isa Time
+
+	type PossCo isa int
+
+	fork(Fork)
+	knife(Knife)
+	spoon(Spoon)
+	smallKnife(SmallKnife)
+
+	plate(Plate)
+	bowl(Bowl)
+	pastaPlate(PastaPlate)
+	soupPlate(SoupPlate)
+	saucer(Saucer)
+
+	waterGlass(WaterGlass)
+	wineGlass(WineGlass)
+	teaCup(TeaCup)
+
+	food_container(Object)
+	drink_container(Object)
+	food_utensil(Object)
+
+	above_of(Object, Object)
+	left_of(Object, Object)
+	on(Object, Object)
+
+	position(PossCo,PossCo,PossCo,Object)
+	time(Time)
+
+	there_is_a_fork
+	there_is_a_knife
+	there_is_a_spoon
+	there_is_a_smallKnife
+	there_is_a_plate
+	there_is_a_bowl
+	there_is_a_pastaPlate
+	there_is_a_soupPlate
+	there_is_a_saucer
+	there_is_a_waterGlass
+	there_is_a_wineGlass
+	there_is_a_teaCup
+	
+	breakfastTime(Breakfast)
+	lunchTime(Lunch)
+	dinnerTime(Dinner)
+
+	breakfast
+	lunch
+	dinner
+	
+	cost(RuleNr, Cost)
+}
+
+term costTerm:V{
+	-sum{X, Y : cost(X, Y) : Y}
+}
+
+theory T : V {
+ // omgezette regels	
+
+!A, B, X, Y1, Y2, Z1, Z2 : (position(X, Y1, Z1, A) & position(X, Y2, Z2, B) & Y1 < Y2) => above_of(A, B).
+
+!A, B, X1, X2, Y, Z1, Z2 : (position(X1, Y, Z1, A) & position(X2, Y, Z2, B) & X1 + 1 = X2) => left_of(A, B).
+
+!A, B, X, Y, Z1, Z2 : (position(X, Y, Z1, A) & position(X, Y, Z2, B) & Z1 < Z2) => on(A, B).
+
+(there_is_a_fork) => ?X, Y, Z, Object : position(X, Y, Z, Object) & fork(Object).
+(there_is_a_knife) => ?X, Y, Z, Object : position(X, Y, Z, Object) & knife(Object).
+(there_is_a_spoon) => ?X, Y, Z, Object : position(X, Y, Z, Object) & spoon(Object).
+(there_is_a_smallKnife) => ?X, Y, Z, Object : position(X, Y, Z, Object) & smallKnife(Object).
+(there_is_a_plate) => ?X, Y, Z, Object : position(X, Y, Z, Object) & plate(Object).
+(there_is_a_bowl) => ?X, Y, Z, Object : position(X, Y, Z, Object) & bowl(Object).
+(there_is_a_pastaPlate) => ?X, Y, Z, Object : position(X, Y, Z, Object) & pastaPlate(Object).
+(there_is_a_soupPlate) => ?X, Y, Z, Object : position(X, Y, Z, Object) & soupPlate(Object).
+(there_is_a_saucer) => ?X, Y, Z, Object : position(X, Y, Z, Object) & saucer(Object).
+(there_is_a_waterGlass) => ?X, Y, Z, Object : position(X, Y, Z, Object) & waterGlass(Object).
+(there_is_a_wineGlass) => ?X, Y, Z, Object : position(X, Y, Z, Object) & wineGlass(Object).
+(there_is_a_teaCup) => ?X, Y, Z, Object : position(X, Y, Z, Object) & teaCup(Object).
+
+!T : breakfast => time(T) & breakfastTime(T).
+!T : lunch => time(T) & lunchTime(T).
+!T : dinner => time(T) & dinnerTime(T).
+
+
+// Rules that always have to satisfy
+( there_is_a_fork). 
+( there_is_a_knife). 
+( there_is_a_plate). 
+!X : ( left_of(X,X) ) => ( false). 
+!X : ( above_of(X,X) ) => ( false). 
+!X : ( fork(X) & knife(X) ) => ( false). 
+!X : ( fork(X) & plate(X) ) => ( false). 
+!X : ( fork(X) & waterGlass(X) ) => ( false). 
+!X : ( fork(X) & wineGlass(X) ) => ( false). 
+!X, Y : ( fork(X) & above_of(X,Y) ) => ( false). 
+!X : ( fork(X) & food_container(X) ) => ( false). 
+!X : ( fork(X) & drink_container(X) ) => ( false). 
+!X : ( fork(X) ) => ( food_utensil(X)). 
+!X : ( knife(X) & plate(X) ) => ( false). 
+!X : ( knife(X) & waterGlass(X) ) => ( false). 
+!X : ( knife(X) & wineGlass(X) ) => ( false). 
+!X, Y : ( knife(X) & left_of(X,Y) ) => ( false). 
+!X : ( knife(X) & food_container(X) ) => ( false). 
+!X : ( knife(X) & drink_container(X) ) => ( false). 
+!X : ( knife(X) ) => ( food_utensil(X)). 
+!X : ( plate(X) & waterGlass(X) ) => ( false). 
+!X : ( plate(X) & wineGlass(X) ) => ( false). 
+!X, Y : ( plate(X) & above_of(X,Y) ) => ( false). 
+!X : ( plate(X) & food_utensil(X) ) => ( false). 
+!X : ( plate(X) & drink_container(X) ) => ( false). 
+!X : ( plate(X) ) => ( food_container(X)). 
+!X : ( waterGlass(X) & wineGlass(X) ) => ( false). 
+!X : ( waterGlass(X) ) => ( there_is_a_waterGlass). 
+!X : ( waterGlass(X) & there_is_a_wineGlass ) => ( false). 
+!X, Y : ( waterGlass(X) & left_of(X,Y) ) => ( false). 
+!X, Y : ( waterGlass(X) & above_of(X,Y) ) => ( false). 
+!X : ( waterGlass(X) & food_utensil(X) ) => ( false). 
+!X : ( waterGlass(X) & food_container(X) ) => ( false). 
+!X : ( waterGlass(X) ) => ( drink_container(X)). 
+!X : ( wineGlass(X) & there_is_a_waterGlass ) => ( false). 
+!X : ( wineGlass(X) ) => ( there_is_a_wineGlass). 
+!X, Y : ( wineGlass(X) & left_of(X,Y) ) => ( false). 
+!X, Y : ( wineGlass(X) & above_of(X,Y) ) => ( false). 
+!X : ( wineGlass(X) & food_utensil(X) ) => ( false). 
+!X : ( wineGlass(X) & food_container(X) ) => ( false). 
+!X : ( wineGlass(X) ) => ( drink_container(X)). 
+( there_is_a_waterGlass & there_is_a_wineGlass ) => ( false). 
+( there_is_a_waterGlass | there_is_a_wineGlass). 
+!X, Y : ( left_of(X,Y) & above_of(X,Y) ) => ( false). 
+!X, Y : ( left_of(X,Y) & drink_container(X) ) => ( false). 
+!X, Y : ( left_of(X,Y) & waterGlass(Y) ) => ( false). 
+!X, Y : ( left_of(X,Y) & wineGlass(Y) ) => ( false). 
+!X, Y : ( left_of(X,Y) & left_of(Y,X) ) => ( false). 
+!X, Y : ( left_of(X,Y) & above_of(Y,X) ) => ( false). 
+!X, Y : ( left_of(X,Y) & drink_container(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & food_container(X) ) => ( false). 
+!X, Y : ( above_of(X,Y) & drink_container(X) ) => ( false). 
+!X, Y : ( above_of(X,Y) & fork(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & knife(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) ) => ( knife(X)). 
+!X, Y : ( above_of(X,Y) & plate(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) & above_of(Y,X) ) => ( false). 
+!X, Y : ( above_of(X,Y) & food_utensil(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) ) => ( food_utensil(X)). 
+!X, Y : ( above_of(X,Y) & food_container(Y) ) => ( false). 
+!X, Y : ( above_of(X,Y) ) => ( drink_container(Y)). 
+!X : ( food_utensil(X) & food_container(X) ) => ( false). 
+!X : ( food_utensil(X) & drink_container(X) ) => ( false). 
+!X : ( food_container(X) & drink_container(X) ) => ( false). 
+!X : ( food_container(X) ) => ( plate(X)). 
+
+// Maximum set of rules that have to satisfy with penalty
+{
+cost(65, 3) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & fork(Y) ) => ( false)). 
+cost(66, 3) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & plate(Y) ) => ( false)). 
+cost(67, 3) <- ~(!X, Y : ( plate(X) & left_of(X,Y) ) => ( food_utensil(Y))). 
+cost(68, 3) <- ~(!X, Y : ( plate(X) & left_of(X,Y) & food_container(Y) ) => ( false)). 
+cost(69, 3) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & fork(Y) ) => ( false)). 
+cost(70, 3) <- ~(!X, Y : ( there_is_a_waterGlass & above_of(X,Y) ) => ( waterGlass(Y))). 
+cost(71, 3) <- ~(!X : ( there_is_a_waterGlass & drink_container(X) ) => ( waterGlass(X))). 
+cost(72, 3) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_waterGlass | wineGlass(Y))). 
+cost(73, 3) <- ~(!X : ( drink_container(X) ) => ( there_is_a_waterGlass | wineGlass(X))). 
+cost(74, 3) <- ~(!X, Y : ( there_is_a_wineGlass & above_of(X,Y) ) => ( wineGlass(Y))). 
+cost(75, 3) <- ~(!X : ( there_is_a_wineGlass & drink_container(X) ) => ( wineGlass(X))). 
+cost(76, 3) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( there_is_a_wineGlass)). 
+cost(77, 3) <- ~(!X, Y : ( above_of(X,Y) ) => ( there_is_a_wineGlass | waterGlass(Y))). 
+cost(78, 3) <- ~(!X : ( drink_container(X) ) => ( there_is_a_wineGlass | waterGlass(X))). 
+cost(79, 3) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & fork(Y) ) => ( false)). 
+cost(80, 3) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( fork(X))). 
+cost(81, 3) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & plate(Y) ) => ( false)). 
+cost(82, 3) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) ) => ( food_utensil(Y))). 
+cost(83, 3) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) & food_container(Y) ) => ( false)). 
+cost(84, 3) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( plate(X))). 
+cost(85, 3) <- ~(!X, Y : ( left_of(X,Y) & fork(Y) ) => ( food_container(X))). 
+cost(86, 3) <- ~(!X, Y : ( left_of(X,Y) & plate(Y) ) => ( fork(X))). 
+cost(87, 3) <- ~(!X, Y : ( left_of(X,Y) ) => ( fork(X) | plate(X))). 
+cost(88, 3) <- ~(!X, Y : ( left_of(X,Y) ) => ( fork(X) | food_utensil(Y))). 
+cost(89, 3) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( fork(X))). 
+cost(90, 3) <- ~(!X, Y : ( left_of(X,Y) ) => ( fork(X) | food_container(X))). 
+cost(91, 3) <- ~(!X, Y : ( left_of(X,Y) & plate(Y) ) => ( food_utensil(X))). 
+cost(92, 3) <- ~(!X, Y : ( left_of(X,Y) ) => ( plate(X) | food_utensil(X))). 
+cost(93, 3) <- ~(!X, Y : ( left_of(X,Y) ) => ( plate(Y) | food_utensil(Y))). 
+cost(94, 3) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(X) | food_utensil(Y))). 
+cost(95, 3) <- ~(!X, Y : ( left_of(X,Y) & food_container(Y) ) => ( food_utensil(X))). 
+cost(96, 3) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(X) | food_container(X))). 
+cost(97, 3) <- ~(!X, Y : ( left_of(X,Y) ) => ( food_utensil(Y) | food_container(Y))). 
+cost(98, 3) <- ~(!X, Y : ( above_of(X,Y) ) => ( waterGlass(Y) | wineGlass(Y))). 
+cost(99, 3) <- ~(!X : ( food_utensil(X) ) => ( fork(X) | knife(X))). 
+cost(100, 3) <- ~(!X : ( drink_container(X) ) => ( waterGlass(X) | wineGlass(X))). 
+cost(101, 2) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & left_of(X,Y) & knife(Y) ) => ( false)). 
+cost(102, 2) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & left_of(X,Y) ) => ( plate(Y))). 
+cost(103, 2) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & left_of(X,Y) & food_utensil(Y) ) => ( false)). 
+cost(104, 2) <- ~(!X, Y : ( fork(X) & there_is_a_waterGlass & left_of(X,Y) ) => ( food_container(Y))). 
+cost(105, 2) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & knife(Y) ) => ( there_is_a_wineGlass)). 
+cost(106, 2) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( there_is_a_wineGlass | plate(Y))). 
+cost(107, 2) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & food_utensil(Y) ) => ( there_is_a_wineGlass)). 
+cost(108, 2) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( there_is_a_wineGlass | food_container(Y))). 
+cost(109, 2) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( knife(Y) | plate(Y))). 
+cost(110, 2) <- ~(!X, Y : ( fork(X) & left_of(X,Y) & food_utensil(Y) ) => ( knife(Y))). 
+cost(111, 2) <- ~(!X, Y : ( fork(X) & left_of(X,Y) ) => ( knife(Y) | food_container(Y))). 
+cost(112, 2) <- ~(!X, Y : ( plate(X) & there_is_a_waterGlass & left_of(X,Y) ) => ( knife(Y))). 
+cost(113, 2) <- ~(!X, Y : ( plate(X) & left_of(X,Y) ) => ( there_is_a_wineGlass | knife(Y))). 
+cost(114, 2) <- ~(!X, Y : ( plate(X) & left_of(X,Y) ) => ( fork(Y) | knife(Y))). 
+cost(115, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( false)). 
+cost(116, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_utensil(X) ) => ( plate(Y))). 
+cost(117, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_utensil(X) & food_utensil(Y) ) => ( false)). 
+cost(118, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_utensil(X) ) => ( food_container(Y))). 
+cost(119, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_container(X) ) => ( knife(Y))). 
+cost(120, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) ) => ( fork(X) | knife(Y))). 
+cost(121, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & knife(Y) ) => ( plate(X))). 
+cost(122, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & knife(Y) ) => ( food_container(X))). 
+cost(123, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) ) => ( knife(Y) | plate(Y))). 
+cost(124, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_utensil(Y) ) => ( knife(Y))). 
+cost(125, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) ) => ( knife(Y) | food_utensil(X))). 
+cost(126, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) ) => ( knife(Y) | food_container(Y))). 
+cost(127, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) ) => ( plate(X) | plate(Y))). 
+cost(128, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_utensil(Y) ) => ( plate(X))). 
+cost(129, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) ) => ( plate(X) | food_container(Y))). 
+cost(130, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) ) => ( plate(Y) | food_container(X))). 
+cost(131, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) & food_utensil(Y) ) => ( food_container(X))). 
+cost(132, 2) <- ~(!X, Y : ( there_is_a_waterGlass & left_of(X,Y) ) => ( food_container(X) | food_container(Y))). 
+cost(133, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( there_is_a_wineGlass)). 
+cost(134, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_wineGlass | plate(Y))). 
+cost(135, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & food_utensil(Y) ) => ( there_is_a_wineGlass)). 
+cost(136, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( there_is_a_wineGlass | food_container(Y))). 
+cost(137, 2) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) ) => ( there_is_a_wineGlass | knife(Y))). 
+cost(138, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | fork(X) | knife(Y))). 
+cost(139, 2) <- ~(!X, Y : ( left_of(X,Y) & knife(Y) ) => ( there_is_a_wineGlass | plate(X))). 
+cost(140, 2) <- ~(!X, Y : ( left_of(X,Y) & knife(Y) ) => ( there_is_a_wineGlass | food_container(X))). 
+cost(141, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | knife(Y) | plate(Y))). 
+cost(142, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(Y) ) => ( there_is_a_wineGlass | knife(Y))). 
+cost(143, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | knife(Y) | food_utensil(X))). 
+cost(144, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | knife(Y) | food_container(Y))). 
+cost(145, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | plate(X) | plate(Y))). 
+cost(146, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(Y) ) => ( there_is_a_wineGlass | plate(X))). 
+cost(147, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | plate(X) | food_container(Y))). 
+cost(148, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | plate(Y) | food_container(X))). 
+cost(149, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(Y) ) => ( there_is_a_wineGlass | food_container(X))). 
+cost(150, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( there_is_a_wineGlass | food_container(X) | food_container(Y))). 
+cost(151, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( knife(Y) | plate(Y))). 
+cost(152, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & food_utensil(Y) ) => ( knife(Y))). 
+cost(153, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) ) => ( knife(Y) | food_container(Y))). 
+cost(154, 2) <- ~(!X, Y : ( left_of(X,Y) & food_container(X) ) => ( fork(Y) | knife(Y))). 
+cost(155, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( fork(X) | fork(Y) | knife(Y))). 
+cost(156, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( fork(Y) | knife(Y) | plate(Y))). 
+cost(157, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( fork(Y) | knife(Y) | food_utensil(X))). 
+cost(158, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( fork(Y) | knife(Y) | food_container(Y))). 
+cost(159, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( knife(Y) | plate(X) | plate(Y))). 
+cost(160, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(Y) ) => ( knife(Y) | plate(X))). 
+cost(161, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( knife(Y) | plate(X) | food_container(Y))). 
+cost(162, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( knife(Y) | plate(Y) | food_container(X))). 
+cost(163, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(Y) ) => ( knife(Y) | food_container(X))). 
+cost(164, 2) <- ~(!X, Y : ( left_of(X,Y) ) => ( knife(Y) | food_container(X) | food_container(Y))). 
+}
+}
+
+structure S : V {
+	time = {}
+	breakfastTime = {}
+	lunchTime = {}
+	dinnerTime = {}
+
+
+	fork = {fork}
+	knife = {knife}
+	spoon = {}
+	plate = {plate}
+	bowl = {}
+	soupPlate = {}
+	teaCup = {}
+	waterGlass = {water}
+	wineGlass = {}
+
+	// above_of = {(f, water)}
+
+	PossCo = {0..3}
+	// Example 1 in claudien:
+	// position = {(0, 0, 0, fork); (1, 0, 0, plate); (2, 0, 0, knife); (2, 1, 0, water)}
+	
+	// Example 2 in claudien:
+	// position = {(0, 0, 0, fork); (1, 0, 0, plate); (2, 0, 0, knife); (2, 1, 0, wine)}
+
+	// Example 3 in claudien:
+	// position = {(0, 0, 0, plate); (1, 0, 0, fork); (2, 0, 0, knife); (2, 1, 0, wine)}
+
+	/** Bij dit onderste voorbeeld zijn niet alle rules van cost waar bv:
+	cost(133, 2) <- ~(!X, Y : ( left_of(X,Y) & food_utensil(X) & knife(Y) ) => ( there_is_a_wineGlass)). 
+	is hier het geval en er zou dus een cost 2 moeten geteld worden.
+	Zo zijn er ongetwijfeld nog veel regels. Dus ik begrijp niet goed waarom cost niet geteld wordt..
+	**/
+
+	// Not an example but should work with cost/penalty
+	position = {(0, 0, 0, plate); (1, 0, 0, fork); (2, 0, 0, knife); (2, 1, 0, water)}
+
+}
+
+procedure main() {
+	stdoptions.nrpropsteps=1
+	// stdoptions.longestbranch=1
+	stdoptions.liftedunitpropagation=false
+	stdoptions.cpsupport=true
+	stdoptions.verbosity.grounding=1
+	stdoptions.verbosity.solving=1
+	stdoptions.groundwithbounds=false
+	stdoptions.splitdefs=false
+
+	sol = minimize(T,S,costTerm)[1]
+	print(sol[V::cost].ct)
+	printmodels(minimize(T,S,costTerm))
+
+
+    	// printmodels(modelexpand(T,S))
+	// printcore(T,S)
+}
+
+
+
+
+
+
